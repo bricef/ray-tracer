@@ -6,13 +6,13 @@ import (
 )
 
 func main() {
-	c := canvas.NewCanvas(100, 100)
+	c := canvas.New(100, 100)
 	for x := 0; x < c.Width; x++ {
 		for y := 0; y < c.Height; y++ {
-			c.Set(x, y, color.NewColor(.1, .1, .1))
+			c.Set(x, y, color.New(.1, .1, .1))
 		}
 	}
-	c.Set(0, 0, color.NewColor(1, 1, 1))
+	c.Set(0, 0, color.New(1, 1, 1))
 
 	c.WritePNG("test.png")
 }
