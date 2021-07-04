@@ -292,6 +292,96 @@ func TestInvertible(t *testing.T) {
 	}
 }
 
-func TestInvert(t *testing.T) {
-	t.Errorf("Not Implemented")
+func TestInvert2x2(t *testing.T) {
+	m := New([][]float64{
+		{4, 3},
+		{1, 1},
+	})
+
+	expected := New([][]float64{
+		{1, -3},
+		{-1, 4},
+	})
+
+	i, err := m.Inverse()
+
+	if !i.Equal(expected) {
+		t.Errorf("Failed to invert matrix %v. Expected %v, got %v (%v)", m, expected, i, err)
+	}
+}
+func TestInvert3x3(t *testing.T) {
+	m := New([][]float64{
+		{3, 0, 2},
+		{2, 0, -2},
+		{0, 1, 1},
+	})
+
+	expected := New([][]float64{
+		{.2, .2, 0},
+		{-.2, .3, 1},
+		{.2, -.3, 0},
+	})
+
+	i, err := m.Inverse()
+
+	if !i.Equal(expected) {
+		t.Errorf("Failed to invert matrix %v. Expected %v, got %v (%v)", m, expected, i, err)
+	}
+}
+
+func TestInvert4x4(t *testing.T) {
+	m := New([][]float64{
+		{1, 1, 1, -1},
+		{1, 1, -1, 1},
+		{1, -1, 1, 1},
+		{-1, 1, 1, 1},
+	})
+
+	expected := New([][]float64{
+		{.25, .25, .25, -.25},
+		{.25, .25, -.25, .25},
+		{.25, -.25, .25, .25},
+		{-.25, .25, .25, .25},
+	})
+
+	i, err := m.Inverse()
+
+	if !i.Equal(expected) {
+		t.Errorf("Failed to invert matrix %v. Expected %v, got %v (%v)", m, expected, i, err)
+	}
+}
+
+func TestMultInverseYieldsIdentity(t *testing.T) {
+	m := New([][]float64{
+		{8, -5, 9, 2},
+		{7, 5, 6, 1},
+		{-6, 0, 9, 6},
+		{-3, 0, -9, -4},
+	})
+	inverse, _ := m.Inverse()
+	result, _ := m.Mult(inverse)
+	if !result.Equal(Identity(4)) {
+		t.Errorf("Multiplying %v by its inverse does not yield the identity. Expected %v, got %v", m, Identity(4), result)
+	}
+}
+
+func TestProductByInverse(t *testing.T) {
+	a := New([][]float64{
+		{3, -9, 7, 3},
+		{3, -8, 2, -9},
+		{-4, 4, 4, 1},
+		{-6, 5, -1, 1},
+	})
+	b := New([][]float64{
+		{8, 2, 2, 2},
+		{3, -1, 7, 0},
+		{7, 0, 5, 4},
+		{6, -2, 0, 5},
+	})
+	c, _ := a.Mult(b)
+	i, _ := b.Inverse()
+	result, _ := c.Mult(i)
+	if !result.Equal(a) {
+		t.Errorf("Failed to get a sensible value when multiplying product by inverse.")
+	}
 }

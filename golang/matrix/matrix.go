@@ -3,6 +3,8 @@ package matrix
 import (
 	"fmt"
 	"math"
+
+	"github.com/bricef/ray-tracer/utils"
 )
 
 type Matrix struct {
@@ -32,8 +34,9 @@ func Zero(r, c int) Matrix {
 }
 
 func (m Matrix) Get(r, c int) (float64, error) {
-	if r >= m.Rows || c >= m.Columns {
-		return 0.0, fmt.Errorf("out of bounds error. Cannot access %v,%v on %v", r, c, m)
+	boundCheck := m.boundCheck(r, c)
+	if boundCheck != nil {
+		return 0.0, boundCheck
 	}
 	return m.Values[r][c], nil
 }
@@ -46,7 +49,7 @@ func (m Matrix) Equal(o Matrix) bool {
 		for j := 0; j < m.Columns; j++ {
 			mv, _ := m.Get(i, j)
 			ov, _ := o.Get(i, j)
-			if mv != ov {
+			if !utils.AlmostEqual(mv, ov) {
 				return false
 			}
 		}
@@ -101,8 +104,9 @@ func (m Matrix) Transpose() Matrix {
 }
 
 func (m Matrix) Submatrix(r, c int) (Matrix, error) {
-	if !(c < m.Columns && r < m.Rows) {
-		return Matrix{}, fmt.Errorf("out of bounds error. Cannot access %v,%v on %v", r, c, m)
+	boundCheck := m.boundCheck(r, c)
+	if boundCheck != nil {
+		return Matrix{}, boundCheck
 	}
 	s := Zero(m.Rows-1, m.Columns-1)
 
@@ -128,6 +132,10 @@ func (m Matrix) Submatrix(r, c int) (Matrix, error) {
 func (m Matrix) Determinant() (float64, error) {
 	if m.Rows != m.Columns {
 		return 0.0, fmt.Errorf("cannot take the determinant of non-square matrix %v", m)
+	}
+
+	if m.Rows == 1 && m.Columns == 1 {
+		return m.Values[0][0], nil
 	}
 
 	if m.Rows == 2 && m.Columns == 2 {
@@ -179,4 +187,54 @@ func (m Matrix) IsInvertible() bool {
 	}
 	return det != 0.0
 
+}
+
+func (m Matrix) inBounds(i, j int) bool {
+	return i < m.Rows && j < m.Columns
+}
+
+func (m Matrix) boundCheck(i, j int) error {
+	if !m.inBounds(i, j) {
+		return fmt.Errorf("tried to access element %v,%v out of bounds of %v", i, j, m)
+	} else {
+		return nil
+	}
+}
+
+func (m Matrix) Set(i, j int, v float64) error {
+	boundCheck := m.boundCheck(i, j)
+	if boundCheck != nil {
+		return boundCheck
+	}
+	m.Values[i][j] = v
+	return nil
+
+}
+
+func (m Matrix) Inverse() (Matrix, error) {
+	det, err := m.Determinant()
+	if err != nil {
+		return Matrix{}, err
+	}
+
+	if det == 0 {
+		return Matrix{}, fmt.Errorf("trying to invert a non invertible matrix %v", m)
+	}
+
+	inverse := Zero(m.Rows, m.Columns)
+
+	for i := 0; i < m.Rows; i++ {
+		for j := 0; j < m.Columns; j++ {
+			c, err := m.Cofactor(i, j)
+			if err != nil {
+				return Matrix{}, err
+			}
+			err = inverse.Set(j, i, c/det)
+			if err != nil {
+				return Matrix{}, err
+			}
+		}
+	}
+
+	return inverse, nil
 }
