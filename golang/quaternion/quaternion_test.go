@@ -35,10 +35,10 @@ func TestQuaternionAddition(t *testing.T) {
 	A := Quaternion{3, -2, 5, 1}
 	B := Quaternion{-2, 3, 1, 0}
 
-	C := Add(A, B)
+	C := A.Add(B)
 	expected := Quaternion{1, 1, 6, 1}
 
-	if !Equal(C, expected) {
+	if !C.Equal(expected) {
 		t.Errorf("Could not add %v and %v. Got %v expected %v", A, B, C, expected)
 	}
 }
@@ -48,9 +48,9 @@ func TestPointSubstraction(t *testing.T) {
 	B := Point(5, 6, 7)
 	expected := Vector(-2, -4, -6)
 
-	C := Sub(A, B)
+	C := A.Sub(B)
 
-	if !Equal(C, expected) {
+	if !C.Equal(expected) {
 		t.Errorf("Could not substract point %v from point %v. Got %v expected %v", B, A, C, expected)
 	}
 
@@ -61,9 +61,9 @@ func TestSubstractingVectorFromPoint(t *testing.T) {
 	v := Vector(5, 6, 7)
 	expected := Point(-2, -4, -6)
 
-	result := Sub(p, v)
+	result := p.Sub(v)
 
-	if !Equal(result, expected) {
+	if !result.Equal(expected) {
 		t.Errorf("Could not substract vector %v from point %v. Got %v expected %v", v, p, result, expected)
 	}
 
@@ -73,8 +73,8 @@ func TestVectorSubstraction(t *testing.T) {
 	a := Vector(3, 2, 1)
 	b := Vector(5, 6, 7)
 	expected := Vector(-2, -4, -6)
-	result := Sub(a, b)
-	if !Equal(result, expected) {
+	result := a.Sub(b)
+	if !result.Equal(expected) {
 		t.Errorf("Could not substract vector %v from vector %v. Got %v expected %v", b, a, result, expected)
 	}
 
@@ -85,7 +85,7 @@ func TestQuaternionNegation(t *testing.T) {
 	expected := Quaternion{-1, 2, -3, 4}
 	result := a.Negate()
 
-	if !Equal(result, expected) {
+	if !result.Equal(expected) {
 		t.Errorf("Failed to negate %v. Got %v, expected %v", a, result, expected)
 	}
 }
@@ -96,7 +96,7 @@ func TestQuaternionScale(t *testing.T) {
 	result := a.Scale(scalar)
 	expected := Quaternion{3.5, -7, 10.5, -14}
 
-	if !Equal(result, expected) {
+	if !result.Equal(expected) {
 		t.Errorf("Failed to scale %v by %v. Got %v, expected %v", a, scalar, result, expected)
 	}
 }
@@ -107,7 +107,7 @@ func TestQuaternionDiv(t *testing.T) {
 	result := a.Divide(scalar)
 	expected := Quaternion{0.5, -1, 1.5, -2}
 
-	if !Equal(result, expected) {
+	if !result.Equal(expected) {
 		t.Errorf("Failed to divide %v by %v. Got %v, expected %v", a, scalar, result, expected)
 	}
 }

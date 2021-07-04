@@ -28,15 +28,15 @@ func Vector(x float64, y float64, z float64) Quaternion {
 	return Quaternion{x, y, z, 0.0}
 }
 
-func Add(a Quaternion, b Quaternion) Quaternion {
+func (a Quaternion) Add(b Quaternion) Quaternion {
 	return Quaternion{a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}
 }
 
-func Equal(a Quaternion, b Quaternion) bool {
+func (a Quaternion) Equal(b Quaternion) bool {
 	return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w
 }
 
-func Sub(a Quaternion, b Quaternion) Quaternion {
+func (a Quaternion) Sub(b Quaternion) Quaternion {
 	return Quaternion{a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w}
 }
 
