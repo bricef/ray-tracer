@@ -3,6 +3,7 @@ package raytracer
 import (
 	m "github.com/bricef/ray-tracer/matrix"
 	q "github.com/bricef/ray-tracer/quaternion"
+	r "github.com/bricef/ray-tracer/ray"
 	t "github.com/bricef/ray-tracer/transform"
 )
 
@@ -24,4 +25,8 @@ func Quaternion(x, y, z, w float64) q.Quaternion {
 
 func Transform() t.Transform {
 	return t.New()
+}
+
+func Ray(o q.Point, d q.Vector) r.Ray {
+	return r.New(o, d)
 }
