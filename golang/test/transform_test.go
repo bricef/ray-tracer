@@ -1,6 +1,7 @@
 package test
 
 import (
+	"math"
 	"testing"
 
 	m "github.com/bricef/ray-tracer/matrix"
@@ -76,10 +77,66 @@ func TestCases(t *testing.T) {
 			Point(2, 3, 4).Quaternion,
 			Point(-2, -3, -4).Quaternion,
 		},
-		// {
-		// 	"Rotation X",
-		// 	Transform().RotateX()
-		// },
+		{
+			"Rotation X",
+			Transform().RotateX(math.Pi / 2),
+			Point(0, 1, 0).Quaternion,
+			Point(0, 0, 1).Quaternion,
+		},
+		{
+			"Rotation X, fractional",
+			Transform().RotateX(math.Pi / 4),
+			Point(0, 1, 0).Quaternion,
+			Point(0, math.Sqrt2/2, math.Sqrt2/2).Quaternion,
+		},
+		{
+			"Rotation Y",
+			Transform().RotateY(math.Pi / 4),
+			Point(0, 0, 1).Quaternion,
+			Point(math.Sqrt2/2, 0, math.Sqrt2/2).Quaternion,
+		},
+		{
+			"Rotation Z",
+			Transform().RotateZ(math.Pi / 4),
+			Point(0, 1, 0).Quaternion,
+			Point(-math.Sqrt2/2, math.Sqrt2/2, 0).Quaternion,
+		},
+		{
+			"Shearing X wrt Y",
+			Transform().Shear(1, 0, 0, 0, 0, 0),
+			Point(2, 3, 4).Quaternion,
+			Point(5, 3, 4).Quaternion,
+		},
+		{
+			"Shearing X wrt Z",
+			Transform().Shear(0, 1, 0, 0, 0, 0),
+			Point(2, 3, 4).Quaternion,
+			Point(6, 3, 4).Quaternion,
+		},
+		{
+			"Shearing Y wrt X",
+			Transform().Shear(0, 0, 1, 0, 0, 0),
+			Point(2, 3, 4).Quaternion,
+			Point(2, 5, 4).Quaternion,
+		},
+		{
+			"Shearing Y wrt Z",
+			Transform().Shear(0, 0, 0, 1, 0, 0),
+			Point(2, 3, 4).Quaternion,
+			Point(2, 7, 4).Quaternion,
+		},
+		{
+			"Shearing Z wrt X",
+			Transform().Shear(0, 0, 0, 0, 1, 0),
+			Point(2, 3, 4).Quaternion,
+			Point(2, 3, 6).Quaternion,
+		},
+		{
+			"Shearing Z wrt Y",
+			Transform().Shear(0, 0, 0, 0, 0, 1),
+			Point(2, 3, 4).Quaternion,
+			Point(2, 3, 7).Quaternion,
+		},
 	}
 	for _, c := range cases {
 		result := c.transform.Apply(c.input)

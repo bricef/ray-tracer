@@ -1,6 +1,8 @@
 package transform
 
 import (
+	"math"
+
 	"github.com/bricef/ray-tracer/matrix"
 	"github.com/bricef/ray-tracer/quaternion"
 )
@@ -62,4 +64,40 @@ func (t Transform) ReflectY() Transform {
 }
 func (t Transform) ReflectZ() Transform {
 	return t.Scale(1, 1, -1)
+}
+
+func (t Transform) RotateX(r float64) Transform {
+	return t.Raw([][]float64{
+		{1, 0, 0, 0},
+		{0, math.Cos(r), -math.Sin(r), 0},
+		{0, math.Sin(r), math.Cos(r), 0},
+		{0, 0, 0, 1},
+	})
+}
+
+func (t Transform) RotateY(r float64) Transform {
+	return t.Raw([][]float64{
+		{math.Cos(r), 0, math.Sin(r), 0},
+		{0, 1, 0, 0},
+		{-math.Sin(r), 0, math.Cos(r), 0},
+		{0, 0, 0, 1},
+	})
+}
+
+func (t Transform) RotateZ(r float64) Transform {
+	return t.Raw([][]float64{
+		{math.Cos(r), -math.Sin(r), 0, 0},
+		{math.Sin(r), math.Cos(r), 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1},
+	})
+}
+
+func (t Transform) Shear(xy, xz, yx, yz, zx, zy float64) Transform {
+	return t.Raw([][]float64{
+		{1, xy, xz, 0},
+		{yx, 1, yz, 0},
+		{zx, zy, 1, 0},
+		{0, 0, 0, 1},
+	})
 }

@@ -2,6 +2,8 @@ package quaternion
 
 import (
 	"math"
+
+	"github.com/bricef/ray-tracer/utils"
 )
 
 type Quaternion struct {
@@ -45,7 +47,7 @@ func (a Quaternion) Add(b interface{}) Quaternion {
 
 func (a Quaternion) Equal(b interface{}) bool {
 	q := From(b)
-	return a.X == q.X && a.Y == q.Y && a.Z == q.Z && a.W == q.W
+	return utils.AlmostEqual(a.X, q.X) && utils.AlmostEqual(a.Y, q.Y) && utils.AlmostEqual(a.Z, q.Z) && utils.AlmostEqual(a.W, q.W)
 }
 
 func (a Quaternion) Sub(b interface{}) Quaternion {
