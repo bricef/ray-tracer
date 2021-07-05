@@ -14,11 +14,13 @@ func New() Transform {
 }
 
 func (t Transform) Translate(x, y, z float64) Transform {
-	new := t.Clone()
-	new.Set(0, 3, x)
-	new.Set(1, 3, y)
-	new.Set(2, 3, z)
-	return Transform{new}
+	m, _ := t.Matrix.Mult(matrix.New([][]float64{
+		{1, 0, 0, x},
+		{0, 1, 0, y},
+		{0, 0, 1, z},
+		{0, 0, 0, 1},
+	}))
+	return Transform{m}
 }
 
 func (t Transform) Apply(a interface{}) quaternion.Quaternion {
@@ -37,4 +39,24 @@ func (t Transform) Apply(a interface{}) quaternion.Quaternion {
 func (t Transform) Inverse() Transform {
 	m, _ := t.Matrix.Inverse()
 	return Transform{m}
+}
+
+func (t Transform) Scale(x, y, z float64) Transform {
+	m, _ := t.Matrix.Mult(matrix.New([][]float64{
+		{x, 0, 0, 0},
+		{0, y, 0, 0},
+		{0, 0, z, 0},
+		{0, 0, 0, 1},
+	}))
+	return Transform{m}
+}
+
+func (t Transform) ReflectX() Transform {
+	return t.Scale(-1, 1, 1)
+}
+func (t Transform) ReflectY() Transform {
+	return t.Scale(1, -1, 1)
+}
+func (t Transform) ReflectZ() Transform {
+	return t.Scale(1, 1, -1)
 }

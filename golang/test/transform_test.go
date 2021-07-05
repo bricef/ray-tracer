@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	m "github.com/bricef/ray-tracer/matrix"
+	"github.com/bricef/ray-tracer/quaternion"
 	. "github.com/bricef/ray-tracer/raytracer"
+	"github.com/bricef/ray-tracer/transform"
 )
 
 func TestTranslateDoesntChangOriginal(t *testing.T) {
@@ -17,43 +19,68 @@ func TestTranslateDoesntChangOriginal(t *testing.T) {
 
 }
 
-func TestTransfromTranslatesPoint(t *testing.T) {
-	tr := Transform()
-	p := Point(-3, 4, 5)
-	result := tr.Translate(5, -3, 2).Apply(p)
-	expected := Point(2, 1, 7)
-	if !result.Equal(expected) {
-		t.Errorf("Failed to translate point %v with %v. Expected %v, got %v.", p, t, expected, result)
-	}
+type Case struct {
+	name      string
+	transform transform.Transform
+	input     quaternion.Quaternion
+	expected  quaternion.Quaternion
 }
 
-func TestTransformFromInverse(t *testing.T) {
-	tr := Transform().Translate(5, -3, 2).Inverse()
-	p := Point(-3, 4, 5)
-	result := tr.Apply(p)
-	expected := Point(-8, 7, 3)
-
-	if !result.Equal(expected) {
-		t.Errorf("Failed apply inverse transform %v to %v. Expected %v, got %v", tr, p, expected, result)
+func TestCases(t *testing.T) {
+	cases := []Case{
+		{
+			"Translate Point",
+			Transform().Translate(5, -3, 2),
+			Point(-3, 4, 5).Quaternion,
+			Point(2, 1, 7).Quaternion,
+		},
+		{
+			"Translate from Inverse",
+			Transform().Translate(5, -3, 2).Inverse(),
+			Point(-3, 4, 5).Quaternion,
+			Point(-8, 7, 3).Quaternion,
+		},
+		{
+			"Translate Vector",
+			Transform().Translate(5, -3, 2),
+			Vector(-3, 4, 5).Quaternion,
+			Vector(-3, 4, 5).Quaternion,
+		},
+		{
+			"Scaling Point",
+			Transform().Scale(2, 3, 4),
+			Point(-4, 6, 8).Quaternion,
+			Point(-8, 18, 32).Quaternion,
+		},
+		{
+			"Scaling Vector",
+			Transform().Scale(2, 3, 4),
+			Vector(-4, 6, 8).Quaternion,
+			Vector(-8, 18, 32).Quaternion,
+		},
+		{
+			"Scaling a vector by the inverse",
+			Transform().Scale(2, 3, 4).Inverse(),
+			Vector(-4, 6, 8).Quaternion,
+			Vector(-2, 2, 2).Quaternion,
+		},
+		{
+			"Reflection is scaling negatively",
+			Transform().Scale(-1, 1, 1),
+			Point(2, 3, 4).Quaternion,
+			Point(-2, 3, 4).Quaternion,
+		},
+		{
+			"Reflection helpers can help",
+			Transform().ReflectX().ReflectY().ReflectZ(),
+			Point(2, 3, 4).Quaternion,
+			Point(-2, -3, -4).Quaternion,
+		},
+	}
+	for _, c := range cases {
+		result := c.transform.Apply(c.input)
+		if !result.Equal(c.expected) {
+			t.Errorf("FAILED [%s]: transform %v, input %v, expected %v, got %v", c.name, c.transform, c.input, c.expected, result)
+		}
 	}
 }
-
-func TestTranslationDoesntAffectVectors(t *testing.T) {
-	tr := Transform().Translate(5, -3, 2)
-	v := Vector(-3, 4, 5)
-	result := tr.Apply(v)
-	expected := Vector(-3, 4, 5)
-	if !result.Equal(expected) {
-		t.Errorf("Translation %v should not affect vector %v. Expected %v, got %v", tr, v, expected, result)
-	}
-}
-
-// func TestScalingPoint(t *testing.T) {
-// 	tr := Transform().Scale(2, 3, 4)
-// 	p := Point(-4, 5, 8)
-// 	result := tr.Apply(p)
-// 	expected := Point(-8, 18, 32)
-// 	if !result.Equal(expected) {
-// 		t.Errorf("Translation %v should not affect vector %v. Expected %v, got %v", tr, v, expected, result)
-// 	}
-// }
