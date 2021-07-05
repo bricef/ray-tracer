@@ -22,6 +22,14 @@ func (t Transform) Translate(x, y, z float64) Transform {
 }
 
 func (t Transform) Apply(a interface{}) quaternion.Quaternion {
-	q := quaternion.From(a)
-	return q
+	q := quaternion.From(a)       // Accepts Quaternions, Vectors, Points
+	m := matrix.FromQuaternion(q) // Quaternion to matrix
+	result, _ := t.Matrix.Mult(m)
+
+	x, _ := result.Get(0, 0)
+	y, _ := result.Get(1, 0)
+	z, _ := result.Get(2, 0)
+	w, _ := result.Get(3, 0)
+
+	return quaternion.New(x, y, z, w)
 }

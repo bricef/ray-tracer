@@ -5,10 +5,10 @@ import (
 )
 
 type Quaternion struct {
-	x float64
-	y float64
-	z float64
-	w float64
+	X float64
+	Y float64
+	Z float64
+	W float64
 }
 
 func New(x, y, z, w float64) Quaternion {
@@ -16,11 +16,11 @@ func New(x, y, z, w float64) Quaternion {
 }
 
 func IsPoint(q Quaternion) bool {
-	return q.w == 1.0
+	return q.W == 1.0
 }
 
 func IsVector(q Quaternion) bool {
-	return q.w == 0.0
+	return q.W == 0.0
 }
 
 func From(b interface{}) Quaternion {
@@ -40,29 +40,29 @@ func From(b interface{}) Quaternion {
 
 func (a Quaternion) Add(b interface{}) Quaternion {
 	q := From(b)
-	return New(a.x+q.x, a.y+q.y, a.z+q.z, a.w+q.w)
+	return New(a.X+q.X, a.Y+q.Y, a.Z+q.Z, a.W+q.W)
 }
 
 func (a Quaternion) Equal(b interface{}) bool {
 	q := From(b)
-	return a.x == q.x && a.y == q.y && a.z == q.z && a.w == q.w
+	return a.X == q.X && a.Y == q.Y && a.Z == q.Z && a.W == q.W
 }
 
 func (a Quaternion) Sub(b interface{}) Quaternion {
 	q := From(b)
-	return New(a.x-q.x, a.y-q.y, a.z-q.z, a.w-q.w)
+	return New(a.X-q.X, a.Y-q.Y, a.Z-q.Z, a.W-q.W)
 }
 
 func (q Quaternion) Negate() Quaternion {
-	return New(-q.x, -q.y, -q.z, -q.w)
+	return New(-q.X, -q.Y, -q.Z, -q.W)
 }
 
 func (q Quaternion) Scale(s float64) Quaternion {
-	return New(s*q.x, s*q.y, s*q.z, s*q.w)
+	return New(s*q.X, s*q.Y, s*q.Z, s*q.W)
 }
 
 func (q Quaternion) Divide(s float64) Quaternion {
-	return New(q.x/s, q.y/s, q.z/s, q.w/s)
+	return New(q.X/s, q.Y/s, q.Z/s, q.W/s)
 }
 
 /*
@@ -94,7 +94,7 @@ func NewVector(x, y, z float64) Vector {
 }
 
 func (q Vector) Magnitude() float64 {
-	return math.Sqrt(q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w)
+	return math.Sqrt(q.X*q.X + q.Y*q.Y + q.Z*q.Z + q.W*q.W)
 }
 
 func (q Vector) Normalize() Vector {
@@ -102,14 +102,14 @@ func (q Vector) Normalize() Vector {
 }
 
 func (v Vector) Dot(o Vector) float64 {
-	return v.x*o.x + v.y*o.y + v.z*o.z + v.w*o.w
+	return v.X*o.X + v.Y*o.Y + v.Z*o.Z + v.W*o.W
 }
 
 func (v Vector) Cross(o Vector) (Vector, error) {
 	return Vector{New(
-		v.y*o.z-v.z*o.y,
-		v.z*o.x-v.x*o.z,
-		v.x*o.y-v.y*o.x,
+		v.Y*o.Z-v.Z*o.Y,
+		v.Z*o.X-v.X*o.Z,
+		v.X*o.Y-v.Y*o.X,
 		0.0,
 	)}, nil
 }

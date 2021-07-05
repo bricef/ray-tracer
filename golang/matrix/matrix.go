@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/bricef/ray-tracer/quaternion"
 	"github.com/bricef/ray-tracer/utils"
 	"github.com/jinzhu/copier"
 )
@@ -20,6 +21,15 @@ func New(values [][]float64) Matrix {
 		len(values[0]),
 		values,
 	}
+}
+
+func FromQuaternion(q quaternion.Quaternion) Matrix {
+	return New([][]float64{
+		{q.X},
+		{q.Y},
+		{q.Z},
+		{q.W},
+	})
 }
 
 func Zero(r, c int) Matrix {
