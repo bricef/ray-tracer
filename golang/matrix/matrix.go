@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/bricef/ray-tracer/utils"
+	"github.com/jinzhu/copier"
 )
 
 type Matrix struct {
@@ -237,4 +238,10 @@ func (m Matrix) Inverse() (Matrix, error) {
 	}
 
 	return inverse, nil
+}
+
+func (m Matrix) Clone() Matrix {
+	new := Matrix{}
+	copier.CopyWithOption(&new, &m, copier.Option{DeepCopy: true})
+	return new
 }

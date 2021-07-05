@@ -1,42 +1,33 @@
-package quaternion
+package test
 
 import (
 	"math"
 	"testing"
+
+	q "github.com/bricef/ray-tracer/quaternion"
+	. "github.com/bricef/ray-tracer/raytracer"
 )
 
 func TestQuaternionAsPoint(t *testing.T) {
-	q := Quaternion{0.0, 0.0, 0.0, 1.0}
-	if !IsPoint(q) || IsVector(q) {
-		t.Errorf("Point vector was not recognised as a point. Expected point but got %v.", q)
+	a := Quaternion(0.0, 0.0, 0.0, 1.0)
+	if !q.IsPoint(a) || q.IsVector(a) {
+		t.Errorf("Point vector was not recognised as a point. Expected point but got %v.", a)
 	}
 }
 
 func TestQuaternionAsVector(t *testing.T) {
-	q := Quaternion{0.0, 0.0, 0.0, 0.0}
-	if !IsVector(q) || IsPoint(q) {
-		t.Errorf("Point vector was not recognised as a point. Expected point but got %v.", q)
-	}
-}
-
-func TestPointConstructor(t *testing.T) {
-	if !IsPoint(Point(0.0, 0.0, 0.0)) {
-		t.Errorf("Failed to construct Point")
-	}
-}
-
-func TestVectorConstructor(t *testing.T) {
-	if !IsVector(Vector(0.0, 0.0, 0.0)) {
-		t.Errorf("Failed to construct Vector")
+	a := Quaternion(0.0, 0.0, 0.0, 0.0)
+	if !q.IsVector(a) || q.IsPoint(a) {
+		t.Errorf("Point vector was not recognised as a point. Expected point but got %v.", a)
 	}
 }
 
 func TestQuaternionAddition(t *testing.T) {
-	A := Quaternion{3, -2, 5, 1}
-	B := Quaternion{-2, 3, 1, 0}
+	A := Quaternion(3, -2, 5, 1)
+	B := Quaternion(-2, 3, 1, 0)
 
 	C := A.Add(B)
-	expected := Quaternion{1, 1, 6, 1}
+	expected := Quaternion(1, 1, 6, 1)
 
 	if !C.Equal(expected) {
 		t.Errorf("Could not add %v and %v. Got %v expected %v", A, B, C, expected)
@@ -81,8 +72,8 @@ func TestVectorSubstraction(t *testing.T) {
 }
 
 func TestQuaternionNegation(t *testing.T) {
-	a := Quaternion{1, -2, 3, -4}
-	expected := Quaternion{-1, 2, -3, 4}
+	a := Quaternion(1, -2, 3, -4)
+	expected := Quaternion(-1, 2, -3, 4)
 	result := a.Negate()
 
 	if !result.Equal(expected) {
@@ -91,10 +82,10 @@ func TestQuaternionNegation(t *testing.T) {
 }
 
 func TestQuaternionScale(t *testing.T) {
-	a := Quaternion{1, -2, 3, -4}
+	a := Quaternion(1, -2, 3, -4)
 	scalar := 3.5
 	result := a.Scale(scalar)
-	expected := Quaternion{3.5, -7, 10.5, -14}
+	expected := Quaternion(3.5, -7, 10.5, -14)
 
 	if !result.Equal(expected) {
 		t.Errorf("Failed to scale %v by %v. Got %v, expected %v", a, scalar, result, expected)
@@ -102,10 +93,10 @@ func TestQuaternionScale(t *testing.T) {
 }
 
 func TestQuaternionDiv(t *testing.T) {
-	a := Quaternion{1, -2, 3, -4}
+	a := Quaternion(1, -2, 3, -4)
 	scalar := 2.0
 	result := a.Divide(scalar)
-	expected := Quaternion{0.5, -1, 1.5, -2}
+	expected := Quaternion(0.5, -1, 1.5, -2)
 
 	if !result.Equal(expected) {
 		t.Errorf("Failed to divide %v by %v. Got %v, expected %v", a, scalar, result, expected)
@@ -113,7 +104,7 @@ func TestQuaternionDiv(t *testing.T) {
 }
 
 func TestMagnitude(t *testing.T) {
-	tests := []Quaternion{
+	tests := []q.Vector{
 		Vector(1, 0, 0),
 		Vector(0, 1, 0),
 		Vector(0, 0, 1),
@@ -139,18 +130,18 @@ func TestMagnitude(t *testing.T) {
 }
 
 func TestNormalisation(t *testing.T) {
-	tests := []Quaternion{
+	tests := []q.Vector{
 		Vector(4, 0, 0),
 		Vector(1, 2, 3),
 	}
-	results := []Quaternion{
+	results := []q.Vector{
 		Vector(1, 0, 0),
-		Vector(1, 2, 3).Divide(math.Sqrt(14)),
+		q.Vector{Vector(1, 2, 3).Divide(math.Sqrt(14))},
 	}
 	for i, v := range tests {
 		result := v.Normalize()
 		expected := results[i]
-		if result != expected {
+		if !result.Equal(expected) {
 			t.Errorf("Failed to normalize %v. Got %v, expected %v", v, result, expected)
 		}
 	}
