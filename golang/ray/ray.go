@@ -6,6 +6,7 @@ import (
 
 	"github.com/bricef/ray-tracer/entity"
 	q "github.com/bricef/ray-tracer/quaternion"
+	"github.com/bricef/ray-tracer/transform"
 )
 
 type Ray struct {
@@ -32,10 +33,6 @@ type Intersection struct {
 	T      float64
 	Entity *entity.Entity
 }
-
-// func (i *Intersection) Equal(o *Intersection) bool {
-
-// }
 
 type Intersections struct {
 	All []Intersection
@@ -74,4 +71,11 @@ func intersects(r Ray, e *entity.Entity) []float64 {
 			(-b + math.Sqrt(discriminant)) / (2 * a),
 		}
 	}
+}
+
+func (r Ray) Transform(t transform.Transform) Ray {
+	return NewRay(
+		t.Apply(r.Origin),
+		t.Apply(r.Direction),
+	)
 }

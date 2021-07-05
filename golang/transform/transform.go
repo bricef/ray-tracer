@@ -11,7 +11,7 @@ type Transform struct {
 	matrix.Matrix
 }
 
-func New() Transform {
+func NewTransform() Transform {
 	return Transform{matrix.Identity(4)}
 }
 

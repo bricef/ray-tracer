@@ -5,6 +5,7 @@ import (
 
 	"github.com/bricef/ray-tracer/entity"
 	q "github.com/bricef/ray-tracer/quaternion"
+	"github.com/bricef/ray-tracer/transform"
 	"github.com/bricef/ray-tracer/utils"
 )
 
@@ -83,6 +84,22 @@ func TestIntersectHaveHits(t *testing.T) {
 	}
 }
 
-// func TestRaysAreTransformable(t *testing.T){
-// 	r :=
-// }
+func TestRaysAreTransformable(t *testing.T) {
+	r := NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
+	tr := transform.NewTransform().Translate(3, 4, 5)
+	nr := r.Transform(tr)
+
+	if !nr.Origin.Equal(q.NewPoint(4, 6, 8)) || !nr.Direction.Equal(q.NewVector(0, 1, 0)) {
+		t.Errorf("Failed to transform Ray %v with %v. Got %v", r, tr, nr)
+	}
+}
+
+func TestRaysAreScalable(t *testing.T) {
+	r := NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
+	tr := transform.NewTransform().Scale(2, 3, 4)
+	nr := r.Transform(tr)
+
+	if !nr.Origin.Equal(q.NewPoint(2, 6, 12)) || !nr.Direction.Equal(q.NewVector(0, 3, 0)) {
+		t.Errorf("Failed to transform Ray %v with %v. Got %v", r, tr, nr)
+	}
+}

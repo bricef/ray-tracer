@@ -24,7 +24,7 @@ func Quaternion(x, y, z, w float64) q.Quaternion {
 }
 
 func Transform() t.Transform {
-	return t.New()
+	return t.NewTransform()
 }
 
 func Ray(o q.Quaternion, d q.Quaternion) r.Ray {

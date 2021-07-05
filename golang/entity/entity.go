@@ -10,6 +10,6 @@ type Entity struct {
 
 func New() *Entity {
 	return &Entity{
-		Transform: transform.New(),
+		Transform: transform.NewTransform(),
 	}
 }
