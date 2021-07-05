@@ -5,13 +5,10 @@ import (
 
 	"github.com/bricef/ray-tracer/entity"
 	q "github.com/bricef/ray-tracer/quaternion"
+	"github.com/bricef/ray-tracer/shapes"
 	"github.com/bricef/ray-tracer/transform"
 	"github.com/bricef/ray-tracer/utils"
 )
-
-func Sphere() *entity.Entity {
-	return entity.New()
-}
 
 func IntersectTestHelper(t *testing.T, ray Ray, e *entity.Entity, expected []float64) {
 	xs := ray.Intersect(e)
@@ -26,38 +23,38 @@ func TestRayIntersectSphere(t *testing.T) {
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
-		Sphere(),
+		shapes.Sphere(),
 		[]float64{4.0, 6.0},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
-		Sphere(),
+		shapes.Sphere(),
 		[]float64{5.0, 5.0},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
-		Sphere(),
+		shapes.Sphere(),
 		[]float64{},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
-		Sphere(),
+		shapes.Sphere(),
 		[]float64{-1, 1},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
-		Sphere(),
+		shapes.Sphere(),
 		[]float64{-6.0, -4.0},
 	)
 }
 
 func TestRayIntersectsHaveEntities(t *testing.T) {
-	a := Sphere()
-	b := Sphere()
+	a := shapes.Sphere()
+	b := shapes.Sphere()
 	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	as := r.Intersect(a)
 	bs := r.Intersect(b)
@@ -76,7 +73,7 @@ func TestRayIntersectsHaveEntities(t *testing.T) {
 }
 
 func TestIntersectHaveHits(t *testing.T) {
-	a := Sphere()
+	a := shapes.Sphere()
 	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	xs := r.Intersect(a)
 	if !(xs.Hit.Entity == a) {
@@ -102,4 +99,21 @@ func TestRaysAreScalable(t *testing.T) {
 	if !nr.Origin.Equal(q.NewPoint(2, 6, 12)) || !nr.Direction.Equal(q.NewVector(0, 3, 0)) {
 		t.Errorf("Failed to transform Ray %v with %v. Got %v", r, tr, nr)
 	}
+}
+
+func TestRayIsTransformedBeforeIntersect(t *testing.T) {
+	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	s := shapes.Sphere()
+	s.SetTransform(transform.NewTransform().Scale(2, 2, 2))
+	xs := r.Intersect(s)
+	if len(xs.All) != 2 {
+		t.Errorf("Wrong number of intersects. Expected 2, got %v", len(xs.All))
+	}
+	if xs.All[0].T != 3 {
+		t.Errorf("First intersection at wrong distance. Expected 3.0, got %v", xs.All[0].T)
+	}
+	if xs.All[1].T != 7 {
+		t.Errorf("First intersection at wrong distance. Expected 7.0, got %v", xs.All[1].T)
+	}
+
 }

@@ -39,20 +39,31 @@ type Intersections struct {
 	Hit *Intersection
 }
 
+func (i Intersection) String() string {
+	return fmt.Sprintf("Intersection(%v)", i.T)
+}
+
 func (r Ray) Hit(e *entity.Entity) Intersection {
 	return *r.Intersect(e).Hit
 }
 
 func (r Ray) Intersect(e *entity.Entity) Intersections {
+	tray := r.Transform(e.Transform.Inverse())
+
+	fmt.Println()
+	fmt.Println(r)
+	fmt.Println(tray)
+
 	xs := make([]Intersection, 2)
 	var hit *Intersection
-	for i, v := range intersects(r, e) {
+	for i, v := range intersects(tray, e) {
 		x := Intersection{T: v, Entity: e}
 		xs[i] = x
 		if v >= 0 && ((hit == nil) || v < hit.T) {
 			hit = &x
 		}
 	}
+	fmt.Println(xs)
 	return Intersections{All: xs, Hit: hit}
 }
 

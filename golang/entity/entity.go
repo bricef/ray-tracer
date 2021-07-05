@@ -13,3 +13,8 @@ func New() *Entity {
 		Transform: transform.NewTransform(),
 	}
 }
+
+func (e *Entity) SetTransform(t transform.Transform) *Entity {
+	e.Transform = t
+	return e
+}
