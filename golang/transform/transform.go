@@ -13,14 +13,18 @@ func New() Transform {
 	return Transform{matrix.Identity(4)}
 }
 
+func (t Transform) Raw(raw [][]float64) Transform {
+	m, _ := t.Matrix.Mult(matrix.New(raw))
+	return Transform{m}
+}
+
 func (t Transform) Translate(x, y, z float64) Transform {
-	m, _ := t.Matrix.Mult(matrix.New([][]float64{
+	return t.Raw([][]float64{
 		{1, 0, 0, x},
 		{0, 1, 0, y},
 		{0, 0, 1, z},
 		{0, 0, 0, 1},
-	}))
-	return Transform{m}
+	})
 }
 
 func (t Transform) Apply(a interface{}) quaternion.Quaternion {
@@ -42,13 +46,12 @@ func (t Transform) Inverse() Transform {
 }
 
 func (t Transform) Scale(x, y, z float64) Transform {
-	m, _ := t.Matrix.Mult(matrix.New([][]float64{
+	return t.Raw([][]float64{
 		{x, 0, 0, 0},
 		{0, y, 0, 0},
 		{0, 0, z, 0},
 		{0, 0, 0, 1},
-	}))
-	return Transform{m}
+	})
 }
 
 func (t Transform) ReflectX() Transform {

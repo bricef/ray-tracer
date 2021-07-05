@@ -71,11 +71,15 @@ func TestCases(t *testing.T) {
 			Point(-2, 3, 4).Quaternion,
 		},
 		{
-			"Reflection helpers can help",
+			"Reflection helpers",
 			Transform().ReflectX().ReflectY().ReflectZ(),
 			Point(2, 3, 4).Quaternion,
 			Point(-2, -3, -4).Quaternion,
 		},
+		// {
+		// 	"Rotation X",
+		// 	Transform().RotateX()
+		// },
 	}
 	for _, c := range cases {
 		result := c.transform.Apply(c.input)
