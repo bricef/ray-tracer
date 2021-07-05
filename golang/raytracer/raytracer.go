@@ -7,11 +7,11 @@ import (
 	t "github.com/bricef/ray-tracer/transform"
 )
 
-func Vector(x float64, y float64, z float64) q.Vector {
+func Vector(x float64, y float64, z float64) q.Quaternion {
 	return q.NewVector(x, y, z)
 }
 
-func Point(x, y, z float64) q.Point {
+func Point(x, y, z float64) q.Quaternion {
 	return q.NewPoint(x, y, z)
 }
 
@@ -27,6 +27,6 @@ func Transform() t.Transform {
 	return t.New()
 }
 
-func Ray(o q.Point, d q.Vector) r.Ray {
+func Ray(o q.Quaternion, d q.Quaternion) r.Ray {
 	return r.New(o, d)
 }

@@ -104,7 +104,7 @@ func TestQuaternionDiv(t *testing.T) {
 }
 
 func TestMagnitude(t *testing.T) {
-	tests := []q.Vector{
+	tests := []q.Quaternion{
 		Vector(1, 0, 0),
 		Vector(0, 1, 0),
 		Vector(0, 0, 1),
@@ -130,13 +130,13 @@ func TestMagnitude(t *testing.T) {
 }
 
 func TestNormalisation(t *testing.T) {
-	tests := []q.Vector{
+	tests := []q.Quaternion{
 		Vector(4, 0, 0),
 		Vector(1, 2, 3),
 	}
-	results := []q.Vector{
+	results := []q.Quaternion{
 		Vector(1, 0, 0),
-		q.Vector{Vector(1, 2, 3).Divide(math.Sqrt(14))},
+		Vector(1, 2, 3).Divide(math.Sqrt(14)),
 	}
 	for i, v := range tests {
 		result := v.Normalize()
@@ -162,18 +162,18 @@ func TestCrossProduct(t *testing.T) {
 	a := Vector(1, 2, 3)
 	b := Vector(2, 3, 4)
 
-	result1, err1 := a.Cross(b)
+	result1 := a.Cross(b)
 	expected1 := Vector(-1, 2, -1)
 
-	result2, err2 := b.Cross(a)
+	result2 := b.Cross(a)
 	expected2 := Vector(1, -2, 1)
 
-	if (result1 != expected1) || err1 != nil {
-		t.Errorf("Failed to calculate %v x %v. Expected %v, got %v. (%v)", a, b, result1, expected1, err1)
+	if result1 != expected1 {
+		t.Errorf("Failed to calculate %v x %v. Expected %v, got %v", a, b, result1, expected1)
 	}
 
-	if (result2 != expected2) || err2 != nil {
-		t.Errorf("Failed to calculate %v x %v. Expected %v, got %v. (%v)", b, a, result2, expected2, err2)
+	if result2 != expected2 {
+		t.Errorf("Failed to calculate %v x %v. Expected %v, got %v", b, a, result2, expected2)
 	}
 
 }

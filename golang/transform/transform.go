@@ -29,8 +29,7 @@ func (t Transform) Translate(x, y, z float64) Transform {
 	})
 }
 
-func (t Transform) Apply(a interface{}) quaternion.Quaternion {
-	q := quaternion.From(a)       // Accepts Quaternions, Vectors, Points
+func (t Transform) Apply(q quaternion.Quaternion) quaternion.Quaternion {
 	m := matrix.FromQuaternion(q) // Quaternion to matrix
 	result, _ := t.Matrix.Mult(m)
 
