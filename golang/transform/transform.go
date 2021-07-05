@@ -33,3 +33,8 @@ func (t Transform) Apply(a interface{}) quaternion.Quaternion {
 
 	return quaternion.New(x, y, z, w)
 }
+
+func (t Transform) Inverse() Transform {
+	m, _ := t.Matrix.Inverse()
+	return Transform{m}
+}
