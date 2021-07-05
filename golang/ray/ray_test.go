@@ -8,14 +8,14 @@ import (
 	"github.com/bricef/ray-tracer/utils"
 )
 
-func Sphere() entity.Entity {
+func Sphere() *entity.Entity {
 	return entity.New()
 }
 
-func IntersectTestHelper(t *testing.T, ray Ray, e entity.Entity, expected []float64) {
-	xs := intersects(ray, e)
+func IntersectTestHelper(t *testing.T, ray Ray, e *entity.Entity, expected []float64) {
+	xs := ray.Intersect(e)
 	for i, v := range expected {
-		if !utils.AlmostEqual(xs[i], v) {
+		if !utils.AlmostEqual(xs.All[i].T, v) {
 			t.Errorf("Ray %v sphere intersect failure. Expected %v, got %v", ray, expected, xs)
 		}
 	}
@@ -24,32 +24,65 @@ func IntersectTestHelper(t *testing.T, ray Ray, e entity.Entity, expected []floa
 func TestRayIntersectSphere(t *testing.T) {
 	IntersectTestHelper(
 		t,
-		New(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
+		NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
 		Sphere(),
 		[]float64{4.0, 6.0},
 	)
 	IntersectTestHelper(
 		t,
-		New(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
+		NewRay(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
 		Sphere(),
 		[]float64{5.0, 5.0},
 	)
 	IntersectTestHelper(
 		t,
-		New(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
+		NewRay(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
 		Sphere(),
 		[]float64{},
 	)
 	IntersectTestHelper(
 		t,
-		New(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
+		NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
 		Sphere(),
 		[]float64{-1, 1},
 	)
 	IntersectTestHelper(
 		t,
-		New(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
+		NewRay(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
 		Sphere(),
 		[]float64{-6.0, -4.0},
 	)
 }
+
+func TestRayIntersectsHaveEntities(t *testing.T) {
+	a := Sphere()
+	b := Sphere()
+	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	as := r.Intersect(a)
+	bs := r.Intersect(b)
+
+	for _, x := range as.All {
+		if x.Entity != a {
+			t.Errorf("Got wrong entity for intersection")
+		}
+	}
+
+	for _, x := range bs.All {
+		if x.Entity != b {
+			t.Errorf("Got wrong entity for intersection")
+		}
+	}
+}
+
+func TestIntersectHaveHits(t *testing.T) {
+	a := Sphere()
+	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	xs := r.Intersect(a)
+	if !(xs.Hit.Entity == a) {
+		t.Errorf("Intersection %v failed to provide correct entity. Expected %v, got %v", xs.Hit, a, xs.Hit.Entity)
+	}
+}
+
+// func TestRaysAreTransformable(t *testing.T){
+// 	r :=
+// }

@@ -13,7 +13,7 @@ type Ray struct {
 	Direction q.Quaternion
 }
 
-func New(o q.Quaternion, d q.Quaternion) Ray {
+func NewRay(o q.Quaternion, d q.Quaternion) Ray {
 	return Ray{o, d}
 }
 
@@ -32,9 +32,34 @@ type Intersection struct {
 	T      float64
 	Entity *entity.Entity
 }
-type Intersections []Intersection
 
-func intersects(r Ray, e entity.Entity) []float64 {
+// func (i *Intersection) Equal(o *Intersection) bool {
+
+// }
+
+type Intersections struct {
+	All []Intersection
+	Hit *Intersection
+}
+
+func (r Ray) Hit(e *entity.Entity) Intersection {
+	return *r.Intersect(e).Hit
+}
+
+func (r Ray) Intersect(e *entity.Entity) Intersections {
+	xs := make([]Intersection, 2)
+	var hit *Intersection
+	for i, v := range intersects(r, e) {
+		x := Intersection{T: v, Entity: e}
+		xs[i] = x
+		if v >= 0 && ((hit == nil) || v < hit.T) {
+			hit = &x
+		}
+	}
+	return Intersections{All: xs, Hit: hit}
+}
+
+func intersects(r Ray, e *entity.Entity) []float64 {
 	sphere_to_ray := r.Origin.Sub(q.NewPoint(0, 0, 0))
 	a := r.Direction.Dot(r.Direction)
 	b := 2 * r.Direction.Dot(sphere_to_ray)

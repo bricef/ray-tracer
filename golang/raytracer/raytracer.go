@@ -28,5 +28,5 @@ func Transform() t.Transform {
 }
 
 func Ray(o q.Quaternion, d q.Quaternion) r.Ray {
-	return r.New(o, d)
+	return r.NewRay(o, d)
 }

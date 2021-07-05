@@ -8,8 +8,8 @@ type Entity struct {
 	Transform transform.Transform
 }
 
-func New() Entity {
-	return Entity{
+func New() *Entity {
+	return &Entity{
 		Transform: transform.New(),
 	}
 }
