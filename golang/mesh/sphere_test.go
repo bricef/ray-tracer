@@ -1,6 +1,7 @@
 package mesh
 
 import (
+	"math"
 	"testing"
 
 	"github.com/bricef/ray-tracer/quaternion"
@@ -12,6 +13,8 @@ type TestCase struct {
 	Expected quaternion.Quaternion
 }
 
+var k float64 = math.Sqrt(3) / 3.0
+
 func TestSphereNormals(t *testing.T) {
 
 	cases := []TestCase{
@@ -19,6 +22,21 @@ func TestSphereNormals(t *testing.T) {
 			NewSphere(),
 			quaternion.NewPoint(1, 0, 0),
 			quaternion.NewVector(1, 0, 0),
+		},
+		{
+			NewSphere(),
+			quaternion.NewPoint(0, 1, 0),
+			quaternion.NewVector(0, 1, 0),
+		},
+		{
+			NewSphere(),
+			quaternion.NewPoint(0, 0, 1),
+			quaternion.NewVector(0, 0, 1),
+		},
+		{
+			NewSphere(),
+			quaternion.NewPoint(k, k, k),
+			quaternion.NewVector(k, k, k),
 		},
 	}
 
@@ -29,4 +47,13 @@ func TestSphereNormals(t *testing.T) {
 		}
 	}
 
+}
+
+func TestSphereNormalsAreNormalised(t *testing.T) {
+	s := NewSphere()
+	normal := s.Normal(quaternion.NewPoint(k, k, k))
+
+	if normal.Magnitude() != 1.0 {
+		t.Errorf("Sphere normal %v. Expected magnitude 1.0, got %v", normal, normal.Magnitude())
+	}
 }

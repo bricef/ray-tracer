@@ -1,6 +1,7 @@
 package quaternion
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/bricef/ray-tracer/utils"
@@ -76,4 +77,19 @@ func NewPoint(x, y, z float64) Quaternion {
 
 func NewVector(x, y, z float64) Quaternion {
 	return New(x, y, z, 0.0)
+}
+
+func (q Quaternion) String() string {
+	var t string = "Quaternion"
+	if IsPoint(q) {
+		t = "Point"
+	} else if IsVector(q) {
+		t = "Vector"
+	}
+
+	return fmt.Sprintf("%s(%v,%v,%v)", t, q.X, q.Y, q.Z)
+}
+
+func (q Quaternion) Reflect(n Quaternion) Quaternion {
+	return q.Sub(n.Scale(2 * q.Dot(n)))
 }

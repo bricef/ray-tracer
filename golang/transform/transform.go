@@ -46,6 +46,11 @@ func (t Transform) Inverse() Transform {
 	return Transform{m}
 }
 
+func (t Transform) Transpose() Transform {
+	m := t.Matrix.Transpose()
+	return Transform{m}
+}
+
 func (t Transform) Scale(x, y, z float64) Transform {
 	return t.Raw([][]float64{
 		{x, 0, 0, 0},

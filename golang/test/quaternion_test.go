@@ -177,3 +177,23 @@ func TestCrossProduct(t *testing.T) {
 	}
 
 }
+
+func TestVectorReflection1(t *testing.T) {
+	v := Vector(1, -1, 0)
+	normal := Vector(0, 1, 0)
+	result := v.Reflect(normal)
+	expected := Vector(1, 1, 0)
+	if !result.Equal(expected) {
+		t.Errorf("Reflection failed. Reflecting %v in %v. Expected %v, got %v", v, normal, expected, result)
+	}
+}
+
+func TestVectorReflection2(t *testing.T) {
+	v := Vector(0, -1, 0)
+	normal := Vector(math.Sqrt2/2, math.Sqrt2/2, 0)
+	result := v.Reflect(normal)
+	expected := Vector(1, 0, 0)
+	if !result.Equal(expected) {
+		t.Errorf("Reflection failed. Reflecting %v in %v. Expected %v, got %v", v, normal, expected, result)
+	}
+}

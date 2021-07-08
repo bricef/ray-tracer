@@ -73,7 +73,7 @@ func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity) {
 
 			if hit != nil {
 				// fmt.Printf("hit: %v\n", hit)
-				canvas.Set(x, y, e.Color)
+				canvas.Set(x, y, e.Material.Color)
 			}
 		}
 
