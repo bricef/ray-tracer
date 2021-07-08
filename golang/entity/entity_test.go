@@ -1,4 +1,4 @@
-package shapes
+package entity
 
 import (
 	"testing"
@@ -8,14 +8,14 @@ import (
 )
 
 func TestSphereHasDefaultTransform(t *testing.T) {
-	s := Sphere()
+	s := NewSphere()
 	if !s.Transform.Matrix.Equal(matrix.Identity(4)) {
 		t.Errorf("Default transform for %v is not %v", s, matrix.Identity(4))
 	}
 }
 
 func TestSphereTransformCanChaneg(t *testing.T) {
-	s := Sphere()
+	s := NewSphere()
 	tr := transform.NewTransform().Translate(2, 3, 4)
 	s.SetTransform(tr)
 	if !s.Transform.Matrix.Equal(tr.Matrix) {

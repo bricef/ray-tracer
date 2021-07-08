@@ -5,7 +5,6 @@ import (
 
 	"github.com/bricef/ray-tracer/entity"
 	q "github.com/bricef/ray-tracer/quaternion"
-	"github.com/bricef/ray-tracer/shapes"
 	"github.com/bricef/ray-tracer/transform"
 	"github.com/bricef/ray-tracer/utils"
 )
@@ -23,38 +22,38 @@ func TestRayIntersectSphere(t *testing.T) {
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
-		shapes.Sphere(),
+		entity.NewSphere(),
 		[]float64{4.0, 6.0},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
-		shapes.Sphere(),
+		entity.NewSphere(),
 		[]float64{5.0, 5.0},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
-		shapes.Sphere(),
+		entity.NewSphere(),
 		[]float64{},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
-		shapes.Sphere(),
+		entity.NewSphere(),
 		[]float64{-1, 1},
 	)
 	IntersectTestHelper(
 		t,
 		NewRay(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
-		shapes.Sphere(),
+		entity.NewSphere(),
 		[]float64{-6.0, -4.0},
 	)
 }
 
 func TestRayIntersectsHaveEntities(t *testing.T) {
-	a := shapes.Sphere()
-	b := shapes.Sphere()
+	a := entity.NewSphere()
+	b := entity.NewSphere()
 	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	as := r.Intersect(a)
 	bs := r.Intersect(b)
@@ -73,7 +72,7 @@ func TestRayIntersectsHaveEntities(t *testing.T) {
 }
 
 func TestIntersectHaveHits(t *testing.T) {
-	a := shapes.Sphere()
+	a := entity.NewSphere()
 	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	xs := r.Intersect(a)
 	if !(xs.Hit.Entity == a) {
@@ -103,7 +102,7 @@ func TestRaysAreScalable(t *testing.T) {
 
 func TestRayIsTransformedBeforeIntersect(t *testing.T) {
 	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
-	s := shapes.Sphere()
+	s := entity.NewSphere()
 	s.SetTransform(transform.NewTransform().Scale(2, 2, 2))
 	xs := r.Intersect(s)
 	if len(xs.All) != 2 {

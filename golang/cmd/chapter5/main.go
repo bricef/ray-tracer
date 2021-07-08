@@ -9,7 +9,6 @@ import (
 	"github.com/bricef/ray-tracer/entity"
 
 	. "github.com/bricef/ray-tracer/raytracer"
-	"github.com/bricef/ray-tracer/shapes"
 	"github.com/bricef/ray-tracer/utils"
 )
 
@@ -24,7 +23,7 @@ func main() {
 		camera.NewViewport(8, 8),
 	)
 
-	sphere := shapes.Sphere()
+	sphere := entity.NewSphere()
 	sphere.SetTransform(Transform().Scale(3, 3, 3).Shear(0.5, 0, 0, 0, 0, 0))
 	scene := []*entity.Entity{sphere}
 
