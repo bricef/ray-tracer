@@ -1,16 +1,14 @@
 
-bin/ray-tracer: main.go
-	go build -o bin/ray-tracer main.go
 
-build: bin/ray-tracer
+all: bin/chapter2 bin/chapter4 bin/chapter5 
+
+bin/%: cmd/%/main.go
+	go build -o $@ $^
 
 clean:
 	rm -rf bin
 
-run: bin/ray-tracer
-	bin/ray-tracer
-
 test:
-	go test -v ./...
+	go test ./...
 
 .PHONY: clean test run build

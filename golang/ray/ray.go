@@ -43,16 +43,12 @@ func (i Intersection) String() string {
 	return fmt.Sprintf("Intersection(%v)", i.T)
 }
 
-func (r Ray) Hit(e *entity.Entity) Intersection {
-	return *r.Intersect(e).Hit
+func (r Ray) Hit(e *entity.Entity) *Intersection {
+	return r.Intersect(e).Hit
 }
 
 func (r Ray) Intersect(e *entity.Entity) Intersections {
 	tray := r.Transform(e.Transform.Inverse())
-
-	fmt.Println()
-	fmt.Println(r)
-	fmt.Println(tray)
 
 	xs := make([]Intersection, 2)
 	var hit *Intersection
@@ -63,7 +59,6 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 			hit = &x
 		}
 	}
-	fmt.Println(xs)
 	return Intersections{All: xs, Hit: hit}
 }
 

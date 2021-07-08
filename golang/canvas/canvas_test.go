@@ -8,9 +8,9 @@ import (
 
 func TestCanvasCreation(t *testing.T) {
 	width, height := 10, 20
-	c := New(width, height)
-	if !(c.Width == 10 && c.Height == 20) {
-		t.Errorf("Failed to create canvas with correct dimension. Got %vx%v expected %vx%v.", c.Width, c.Height, width, height)
+	c := NewImageCanvas(width, height)
+	if !(c.width == 10 && c.height == 20) {
+		t.Errorf("Failed to create canvas with correct dimension. Got %vx%v expected %vx%v.", c.width, c.height, width, height)
 	}
 	for _, column := range c.pixels {
 		for _, pixel := range column {
@@ -20,7 +20,7 @@ func TestCanvasCreation(t *testing.T) {
 }
 
 func TestWriteToCanvas(t *testing.T) {
-	c := New(10, 10)
+	c := NewImageCanvas(10, 10)
 	red := color.New(1, 0, 0)
 	c.Set(1, 1, red)
 	pixel, err := c.Get(1, 1)

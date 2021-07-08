@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	c := canvas.New(100, 100)
+	c := canvas.NewImageCanvas(100, 100)
 
 	pos := Point(50, 50, 0)
 
