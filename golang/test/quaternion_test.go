@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -196,4 +197,22 @@ func TestVectorReflection2(t *testing.T) {
 	if !result.Equal(expected) {
 		t.Errorf("Reflection failed. Reflecting %v in %v. Expected %v, got %v", v, normal, expected, result)
 	}
+}
+
+func TestMagnitudeSanity(t *testing.T) {
+	position := Point(0, 0, 0)
+	point := Point(0, 0, -10)
+	v := point.Sub(position)
+	mag_v := v.Magnitude()
+	normal_v := v.Normalize()
+
+	if mag_v != 10 {
+		t.Errorf("Magnitude failure. Expected 10, got %v", mag_v)
+	}
+	if !normal_v.Equal(Vector(0, 0, -1)) {
+		t.Errorf("normalisation failure. Expected %v, got %v", Vector(0, 0, -1), normal_v)
+	}
+
+	fmt.Printf("mag: %v, normal:%v", mag_v, normal_v)
+
 }

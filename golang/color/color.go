@@ -33,3 +33,6 @@ func (c Color) Mult(o Color) Color {
 func (c Color) Equal(o Color) bool {
 	return utils.AlmostEqual(c.R, o.R) && utils.AlmostEqual(c.G, o.G) && utils.AlmostEqual(c.B, o.B)
 }
+
+var Black = New(0, 0, 0)
+var White = New(1, 1, 1)

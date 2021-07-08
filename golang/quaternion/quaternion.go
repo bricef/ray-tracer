@@ -93,3 +93,7 @@ func (q Quaternion) String() string {
 func (q Quaternion) Reflect(n Quaternion) Quaternion {
 	return q.Sub(n.Scale(2 * q.Dot(n)))
 }
+
+func (q Quaternion) Invert() Quaternion {
+	return q.Scale(-1)
+}

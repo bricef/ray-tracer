@@ -66,14 +66,13 @@ func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity) {
 			c.Position,
 			originToPixel.Normalize(),
 		)
-		//fmt.Printf("ray: %v\n", r)
 
 		for _, e := range scene {
 			hit := r.Hit(e)
 
 			if hit != nil {
-				// fmt.Printf("hit: %v\n", hit)
-				canvas.Set(x, y, e.Material.Color)
+				pixelColor := e.Material.Color
+				canvas.Set(x, y, pixelColor)
 			}
 		}
 
