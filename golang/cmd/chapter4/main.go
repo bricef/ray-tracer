@@ -21,6 +21,6 @@ func main() {
 
 	}
 
-	c.WritePNG("test.png")
+	c.WritePNG("output/chapter4.png")
 
 }

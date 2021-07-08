@@ -1,6 +1,8 @@
 package color
 
 import (
+	"math"
+
 	utils "github.com/bricef/ray-tracer/utils"
 )
 
@@ -36,3 +38,11 @@ func (c Color) Equal(o Color) bool {
 
 var Black = New(0, 0, 0)
 var White = New(1, 1, 1)
+
+func (c Color) Cutoff() Color {
+	return Color{
+		math.Min(c.R, 1.0),
+		math.Min(c.G, 1.0),
+		math.Min(c.B, 1.0),
+	}
+}

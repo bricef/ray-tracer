@@ -17,7 +17,7 @@ import (
 
 func main() {
 	// Set our canvas up for rendering
-	frame := canvas.NewImageCanvas(100, 100)
+	frame := canvas.NewImageCanvas(1000, 1000)
 
 	camera := camera.NewCamera(
 		Point(0, 0, 25),
@@ -27,17 +27,23 @@ func main() {
 	)
 
 	mat := material.NewMaterial()
-	mat.Ambient = 1.0
-	mat.Specular = 0.0
-	mat.Diffuse = 0.0
+	mat.Color = color.New(1, 0.2, 1)
 
 	sphere := entity.NewSphere()
-	sphere.SetTransform(Transform().Scale(6, 6, 6).Shear(0.5, 0, 0, 0, 0, 0))
+	sphere.SetTransform(
+		Transform().Scale(10, 10, 10),
+	)
 	sphere.SetMaterial(mat)
-	scene := []*entity.Entity{sphere}
+
+	scene := []*entity.Entity{
+		sphere,
+	}
 
 	lights := []*light.PointLight{
-		light.NewPointLight(color.New(1, 1, 1), Point(0, 0, 25)),
+		light.NewPointLight(
+			color.New(1, 1, 1),
+			Point(-25, -25, 25),
+		),
 	}
 
 	camera.Render(&frame, scene, lights)
@@ -45,7 +51,7 @@ func main() {
 	// Write out to file
 	OUTPUT_DIR := "output"
 	utils.EnsureDir(OUTPUT_DIR)
-	outputFilename := path.Join(OUTPUT_DIR, "chapter5.png")
+	outputFilename := path.Join(OUTPUT_DIR, "chapter6.png")
 	frame.WritePNG(outputFilename)
 	fmt.Printf("Wrote output to %v", outputFilename)
 }

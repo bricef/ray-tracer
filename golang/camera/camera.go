@@ -1,10 +1,10 @@
 package camera
 
 import (
-	"fmt"
-
 	"github.com/bricef/ray-tracer/canvas"
+	"github.com/bricef/ray-tracer/color"
 	"github.com/bricef/ray-tracer/entity"
+	"github.com/bricef/ray-tracer/light"
 	"github.com/bricef/ray-tracer/quaternion"
 	. "github.com/bricef/ray-tracer/raytracer"
 )
@@ -47,11 +47,11 @@ func (v *Viewport) FrameXYToViewportXY(frame canvas.Canvas, fx int, fy int) (flo
 	Vx := (Kx * Fx) - (0.5 * v.Width)
 	Vy := (Ky * Fy) - (0.5 * v.Height)
 
-	fmt.Printf("canvas: %v,%v -> viewport: %v,%v\n ", fx, fy, Vx, Vy)
+	// fmt.Printf("canvas: %v,%v -> viewport: %v,%v\n ", fx, fy, Vx, Vy)
 	return Vx, Vy
 }
 
-func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity) {
+func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity, lights []*light.PointLight) {
 
 	pixels := canvas.Pixels()
 	for pixels.Next() {
@@ -71,7 +71,18 @@ func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity) {
 			hit := r.Hit(e)
 
 			if hit != nil {
-				pixelColor := e.Material.Color
+				hitPoint := r.Position(hit.T)
+				pixelColor := color.New(0, 0, 0)
+				for _, l := range lights {
+					pixelColor = light.Phong(
+						e.Material,
+						l,
+						hitPoint,
+						r.Direction.Invert(),
+						e.Normal(hitPoint),
+					)
+
+				}
 				canvas.Set(x, y, pixelColor)
 			}
 		}

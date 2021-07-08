@@ -57,9 +57,12 @@ func Phong(
 			specular = l.Intensity.Scale(m.Specular * factor)
 		}
 	}
-	fmt.Printf("Ambient: %v\nDiffuse: %v\nSpecular: %v\n\n", ambient, diffuse, specular)
+	if specular.R < 0 {
+		fmt.Printf("Ambient: %v\nDiffuse: %v\nSpecular: %v\n", ambient, diffuse, specular)
+		fmt.Printf("Total: %v\n\n", ambient.Add(diffuse).Add(specular))
+	}
 
-	return ambient.Add(diffuse).Add(specular)
+	return specular.Add(ambient).Add(diffuse)
 }
 
 // func Phong(e *entity.Entity, l *PointLight, hitPosition quaternion.Quaternion, incident ray.Ray) color.Color {

@@ -75,7 +75,7 @@ func NewImageCanvas(width, height int) ImageCanvas {
 }
 
 func (c ImageCanvas) Set(x int, y int, value color.Color) error {
-	fmt.Printf("Pixel %v,%v: %v\n", x, y, value)
+	// fmt.Printf("Pixel %v,%v: %v\n", x, y, value)
 	if x >= c.width || y >= c.height {
 		return fmt.Errorf("out of bounds. Pixel %v,%v doesn't exist on canvas sized %v,%v", x, y, c.width, c.height)
 	}
@@ -95,6 +95,7 @@ func (c ImageCanvas) Image() image.Image {
 	img := image.NewNRGBA64(image.Rect(0, 0, c.width-1, c.height-1))
 	for x, column := range c.pixels {
 		for y, pixel := range column {
+			pixel = pixel.Cutoff()
 			img.Set(x, y, imageColor.RGBA64{
 				uint16(pixel.R * math.MaxUint16),
 				uint16(pixel.G * math.MaxUint16),
