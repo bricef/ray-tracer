@@ -1,91 +1,78 @@
 package camera
 
 import (
+	"math"
+
 	"github.com/bricef/ray-tracer/canvas"
-	"github.com/bricef/ray-tracer/color"
-	"github.com/bricef/ray-tracer/entity"
-	"github.com/bricef/ray-tracer/light"
 	"github.com/bricef/ray-tracer/quaternion"
-	. "github.com/bricef/ray-tracer/raytracer"
+	"github.com/bricef/ray-tracer/ray"
+	"github.com/bricef/ray-tracer/scene"
+	"github.com/bricef/ray-tracer/transform"
 )
 
 type Camera struct {
-	Position         quaternion.Quaternion
-	Direction        quaternion.Quaternion
-	ViewportDistance float64
-	Viewport         Viewport
+	Transform   transform.Transform
+	Distance    float64
+	FrameWidth  int
+	FrameHeight int
+	FOV         float64
+	PixelSize   float64
+	Aspect      float64
+	HalfWidth   float64
+	HalfHeight  float64
 }
 
-func NewCamera(position quaternion.Quaternion, direction quaternion.Quaternion, distance float64, viewport Viewport) Camera {
-	return Camera{
-		Position:         position,
-		Direction:        direction,
-		ViewportDistance: distance,
-		Viewport:         viewport,
+func CameraFromFOV(w int, h int, fov float64) *Camera {
+	halfView := math.Tan(fov / 2)
+	aspect := float64(w) / float64(h)
+	var halfHeight, halfWidth float64
+	if aspect >= 1.0 {
+		halfWidth = halfView
+		halfHeight = halfView / aspect
+	} else {
+		halfWidth = halfView * aspect
+		halfHeight = halfView
+	}
+	return &Camera{
+		Transform:   transform.NewTransform(),
+		Distance:    1.0,
+		FrameWidth:  w,
+		FrameHeight: h,
+		FOV:         fov,
+		PixelSize:   (2.0 * halfWidth) / float64(w),
+		Aspect:      aspect,
+		HalfWidth:   halfWidth,
+		HalfHeight:  halfHeight,
 	}
 }
 
-type Viewport struct {
-	Width  float64
-	Height float64
+func (c *Camera) ProjectPixelRay(u, v int) ray.Ray {
+	xoff := (float64(u) + 0.5) * c.PixelSize
+	yoff := (float64(v) + 0.5) * c.PixelSize
+
+	worldX := c.HalfWidth - xoff
+	worldY := c.HalfHeight - yoff
+
+	pixel := c.Transform.Inverse().Apply(quaternion.NewPoint(worldX, worldY, -c.Distance))
+	origin := c.Transform.Apply(quaternion.NewPoint(0, 0, 0))
+	direction := pixel.Sub(origin).Normalize()
+	return ray.NewRay(
+		origin,
+		direction,
+	)
 }
 
-func NewViewport(width float64, height float64) Viewport {
-	return Viewport{
-		width,
-		height,
-	}
+func (c *Camera) SetTransform(t transform.Transform) *Camera {
+	c.Transform = t
+	return c
 }
 
-func (v *Viewport) FrameXYToViewportXY(frame canvas.Canvas, fx int, fy int) (float64, float64) {
-	Fx := float64(fx)
-	Fy := float64(fy)
-
-	Kx := v.Width / float64(frame.Width())
-	Ky := v.Height / float64(frame.Height())
-
-	Vx := (Kx * Fx) - (0.5 * v.Width)
-	Vy := (Ky * Fy) - (0.5 * v.Height)
-
-	// fmt.Printf("canvas: %v,%v -> viewport: %v,%v\n ", fx, fy, Vx, Vy)
-	return Vx, Vy
-}
-
-func (c *Camera) Render(canvas canvas.Canvas, scene []*entity.Entity, lights []*light.PointLight) {
-
-	pixels := canvas.Pixels()
+func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
+	pixels := frame.Pixels()
 	for pixels.Next() {
-		x, y := pixels.Get()
-
-		vx, vy := c.Viewport.FrameXYToViewportXY(canvas, x, y)
-		frameCenterToPixel := Vector(vx, vy, 0)
-		originToFrame := c.Direction.Normalize().Scale(c.ViewportDistance)
-		originToPixel := originToFrame.Add(frameCenterToPixel)
-
-		r := Ray(
-			c.Position,
-			originToPixel.Normalize(),
-		)
-
-		for _, e := range scene {
-			hit := r.Hit(e)
-
-			if hit != nil {
-				hitPoint := r.Position(hit.T)
-				pixelColor := color.New(0, 0, 0)
-				for _, l := range lights {
-					pixelColor = light.Phong(
-						e.Material,
-						l,
-						hitPoint,
-						r.Direction.Invert(),
-						e.Normal(hitPoint),
-					)
-
-				}
-				canvas.Set(x, y, pixelColor)
-			}
-		}
-
+		u, v := pixels.Get()
+		r := c.ProjectPixelRay(u, v)
+		pix := s.Shade(r)
+		frame.Set(u, v, pix)
 	}
 }

@@ -34,7 +34,7 @@ func TestDefaultScene(t *testing.T) {
 		t.Errorf("Default scene not created with expected default light source of right color")
 	}
 
-	if !s.Entities[1].Transform.Equal(transform.NewTransform().Scale(0.5, 0.5, 0.5).Matrix) {
+	if !s.Entities[1].Transform.Equal(transform.NewTransform().Scale(0.5, 0.5, 0.5)) {
 		t.Errorf("Default scene not created with default scaled object")
 	}
 

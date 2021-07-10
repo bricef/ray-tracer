@@ -14,7 +14,7 @@ func TestTranslateDoesntChangOriginal(t *testing.T) {
 	original := Transform()
 	i := m.Identity(4)
 	original.Translate(1, 2, 3)
-	if !original.Equal(i) {
+	if !original.Matrix.Equal(i) {
 		t.Errorf("Invalid mutation of matrix %v. Shuld be %v", original, i)
 	}
 

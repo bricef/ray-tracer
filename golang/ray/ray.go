@@ -163,3 +163,7 @@ func (r Ray) Transform(t transform.Transform) Ray {
 		t.Apply(r.Direction),
 	)
 }
+
+func (a Ray) Equal(b Ray) bool {
+	return a.Direction.Equal(b.Direction) && a.Origin.Equal(b.Origin)
+}

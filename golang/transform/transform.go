@@ -15,6 +15,10 @@ func NewTransform() Transform {
 	return Transform{matrix.Identity(4)}
 }
 
+func (a Transform) Equal(b Transform) bool {
+	return a.Matrix.Equal(b.Matrix)
+}
+
 func (t Transform) Raw(raw [][]float64) Transform {
 	m, _ := t.Matrix.Mult(matrix.New(raw))
 	return Transform{m}
@@ -104,4 +108,22 @@ func (t Transform) Shear(xy, xz, yx, yz, zx, zy float64) Transform {
 		{zx, zy, 1, 0},
 		{0, 0, 0, 1},
 	})
+}
+
+func ViewTransform(from quaternion.Quaternion, to quaternion.Quaternion, up quaternion.Quaternion) Transform {
+	forward := to.Sub(from).Normalize()
+	left := forward.Cross(up.Normalize())
+	trueUp := left.Cross(forward)
+
+	orientation := Transform{
+		matrix.New(
+			[][]float64{
+				{left.X, left.Y, left.Z, 0},
+				{trueUp.X, trueUp.Y, trueUp.Z, 0},
+				{-forward.X, -forward.Y, -forward.Z, 0},
+				{0, 0, 0, 1},
+			},
+		),
+	}
+	return orientation.Translate(-from.X, -from.Y, -from.Z)
 }

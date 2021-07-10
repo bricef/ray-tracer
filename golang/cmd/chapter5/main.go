@@ -19,7 +19,7 @@ func main() {
 	// Set our canvas up for rendering
 	frame := canvas.NewImageCanvas(100, 100)
 
-	camera := camera.NewCamera(
+	camera := camera.NewDeprecatedCamera(
 		Point(0, 0, 25),
 		Vector(0, 0, -1),
 		8.0,
@@ -40,7 +40,7 @@ func main() {
 		light.NewPointLight(color.New(1, 1, 1), Point(0, 0, 25)),
 	}
 
-	camera.Render(&frame, scene, lights)
+	camera.Render(frame, scene, lights)
 
 	// Write out to file
 	OUTPUT_DIR := "output"

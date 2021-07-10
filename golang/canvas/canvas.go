@@ -53,20 +53,20 @@ func (c *ImageCanvas) Pixels() *PixelIterator {
 	return &PixelIterator{c, 0, 0}
 }
 
-func (c ImageCanvas) Height() int {
+func (c *ImageCanvas) Height() int {
 	return c.height
 }
 
-func (c ImageCanvas) Width() int {
+func (c *ImageCanvas) Width() int {
 	return c.width
 }
 
-func NewImageCanvas(width, height int) ImageCanvas {
+func NewImageCanvas(width, height int) *ImageCanvas {
 	pixels := make([][]color.Color, width)
 	for i := range pixels {
 		pixels[i] = make([]color.Color, height)
 	}
-	return ImageCanvas{
+	return &ImageCanvas{
 		width,
 		height,
 		pixels,
@@ -74,7 +74,7 @@ func NewImageCanvas(width, height int) ImageCanvas {
 
 }
 
-func (c ImageCanvas) Set(x int, y int, value color.Color) error {
+func (c *ImageCanvas) Set(x int, y int, value color.Color) error {
 	// fmt.Printf("Pixel %v,%v: %v\n", x, y, value)
 	if x >= c.width || y >= c.height {
 		return fmt.Errorf("out of bounds. Pixel %v,%v doesn't exist on canvas sized %v,%v", x, y, c.width, c.height)
@@ -84,14 +84,14 @@ func (c ImageCanvas) Set(x int, y int, value color.Color) error {
 	return nil
 }
 
-func (c ImageCanvas) Get(x, y int) (color.Color, error) {
+func (c *ImageCanvas) Get(x, y int) (color.Color, error) {
 	if x >= c.width || y >= c.height {
 		return color.Color{}, fmt.Errorf("out of bounds. Pixel %v,%v doesn't exist on canvas sized %v,%v", x, y, c.width, c.height)
 	}
 	return c.pixels[x][y], nil
 }
 
-func (c ImageCanvas) Image() image.Image {
+func (c *ImageCanvas) Image() image.Image {
 	img := image.NewNRGBA64(image.Rect(0, 0, c.width-1, c.height-1))
 	for x, column := range c.pixels {
 		for y, pixel := range column {
@@ -108,7 +108,7 @@ func (c ImageCanvas) Image() image.Image {
 	return img
 }
 
-func (c ImageCanvas) WritePNG(filename string) {
+func (c *ImageCanvas) WritePNG(filename string) {
 	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
