@@ -46,6 +46,12 @@ func (i Intersection) String() string {
 }
 
 func (i Intersection) Shade(l *light.PointLight) color.Color {
+	if l == nil {
+		panic(fmt.Errorf("trying to shade with nil light"))
+	}
+	if i.Entity == nil {
+		panic(fmt.Errorf("trying to shade with nil entity"))
+	}
 	return light.Phong(i.Entity.Material, l, i.Point, i.EyeVector, i.Normal)
 }
 
@@ -63,6 +69,14 @@ type Intersections struct {
 }
 
 func (is Intersections) Merge(xs Intersections) Intersections {
+	// Short circuit the empty case.
+	if (len(is.All) + len(xs.All)) == 0 {
+		return Intersections{
+			All: []Intersection{},
+			Hit: nil,
+		}
+	}
+
 	newAll := []Intersection{}
 
 	newAll = append(newAll, is.All...)
@@ -72,9 +86,16 @@ func (is Intersections) Merge(xs Intersections) Intersections {
 		return newAll[i].T < newAll[j].T
 	})
 
+	hitIndex := len(newAll) - 1
+	for i, x := range newAll {
+		if x.T > 0 && x.T < newAll[hitIndex].T {
+			hitIndex = i
+		}
+	}
+
 	return Intersections{
 		All: newAll,
-		Hit: &newAll[0],
+		Hit: &newAll[hitIndex],
 	}
 }
 
@@ -85,9 +106,16 @@ func (r Ray) Hit(e *entity.Entity) *Intersection {
 func (r Ray) Intersect(e *entity.Entity) Intersections {
 	tray := r.Transform(e.Transform.Inverse())
 
-	xs := make([]Intersection, 2)
+	icoords := intersects(tray, e)
+
+	// Short circuit on miss
+	if len(icoords) == 0 {
+		return Intersections{}
+	}
+
+	xs := make([]Intersection, len(icoords))
 	var hit *Intersection
-	for i, v := range intersects(tray, e) {
+	for i, v := range icoords {
 		p := r.Position(v)
 		n := e.Normal(p)
 		eye := r.Direction.Invert()

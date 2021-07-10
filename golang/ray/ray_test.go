@@ -179,7 +179,7 @@ func TestShadingAnIntersectionInsideObject(t *testing.T) {
 		q.NewVector(0, 0, 1),
 	)
 	xs := s.Intersections(r)
-	got := xs.All[2].Shade(l) // intersection at 0.5. We have intersections at -1.0, -0.5, 0.5 and 1.0
+	got := xs.Hit.Shade(l)
 	expected := color.New(0.90498, 0.90498, 0.90498)
 
 	if !got.Equal(expected) {
