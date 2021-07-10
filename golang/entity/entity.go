@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/bricef/ray-tracer/color"
 	"github.com/bricef/ray-tracer/material"
 	"github.com/bricef/ray-tracer/mesh"
 	"github.com/bricef/ray-tracer/quaternion"
@@ -10,7 +9,6 @@ import (
 
 type Entity struct {
 	Transform transform.Transform
-	Color     color.Color
 	Mesh      *mesh.Mesh
 	Material  *material.Material
 }

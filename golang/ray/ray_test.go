@@ -1,19 +1,23 @@
-package ray
+package ray_test
 
 import (
 	"testing"
 
+	"github.com/bricef/ray-tracer/color"
 	"github.com/bricef/ray-tracer/entity"
+	"github.com/bricef/ray-tracer/light"
 	q "github.com/bricef/ray-tracer/quaternion"
+	"github.com/bricef/ray-tracer/ray"
+	"github.com/bricef/ray-tracer/scene"
 	"github.com/bricef/ray-tracer/transform"
 	"github.com/bricef/ray-tracer/utils"
 )
 
-func IntersectTestHelper(t *testing.T, ray Ray, e *entity.Entity, expected []float64) {
-	xs := ray.Intersect(e)
+func IntersectTestHelper(t *testing.T, r ray.Ray, e *entity.Entity, expected []float64) {
+	xs := r.Intersect(e)
 	for i, v := range expected {
 		if !utils.AlmostEqual(xs.All[i].T, v) {
-			t.Errorf("Ray %v sphere intersect failure. Expected %v, got %v", ray, expected, xs)
+			t.Errorf("Ray %v sphere intersect failure. Expected %v, got %v", r, expected, xs)
 		}
 	}
 }
@@ -21,31 +25,31 @@ func IntersectTestHelper(t *testing.T, ray Ray, e *entity.Entity, expected []flo
 func TestRayIntersectSphere(t *testing.T) {
 	IntersectTestHelper(
 		t,
-		NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
+		ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1)),
 		entity.NewSphere(),
 		[]float64{4.0, 6.0},
 	)
 	IntersectTestHelper(
 		t,
-		NewRay(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
+		ray.NewRay(q.NewPoint(0, 1, -5), q.NewVector(0, 0, 1)),
 		entity.NewSphere(),
 		[]float64{5.0, 5.0},
 	)
 	IntersectTestHelper(
 		t,
-		NewRay(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
+		ray.NewRay(q.NewPoint(0, 2, -5), q.NewVector(0, 0, 1)),
 		entity.NewSphere(),
 		[]float64{},
 	)
 	IntersectTestHelper(
 		t,
-		NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
+		ray.NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1)),
 		entity.NewSphere(),
 		[]float64{-1, 1},
 	)
 	IntersectTestHelper(
 		t,
-		NewRay(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
+		ray.NewRay(q.NewPoint(0, 0, 5), q.NewVector(0, 0, 1)),
 		entity.NewSphere(),
 		[]float64{-6.0, -4.0},
 	)
@@ -54,7 +58,7 @@ func TestRayIntersectSphere(t *testing.T) {
 func TestRayIntersectsHaveEntities(t *testing.T) {
 	a := entity.NewSphere()
 	b := entity.NewSphere()
-	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	as := r.Intersect(a)
 	bs := r.Intersect(b)
 
@@ -73,7 +77,7 @@ func TestRayIntersectsHaveEntities(t *testing.T) {
 
 func TestIntersectHaveHits(t *testing.T) {
 	a := entity.NewSphere()
-	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	xs := r.Intersect(a)
 	if !(xs.Hit.Entity == a) {
 		t.Errorf("Intersection %v failed to provide correct entity. Expected %v, got %v", xs.Hit, a, xs.Hit.Entity)
@@ -81,7 +85,7 @@ func TestIntersectHaveHits(t *testing.T) {
 }
 
 func TestRaysAreTransformable(t *testing.T) {
-	r := NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
+	r := ray.NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
 	tr := transform.NewTransform().Translate(3, 4, 5)
 	nr := r.Transform(tr)
 
@@ -91,7 +95,7 @@ func TestRaysAreTransformable(t *testing.T) {
 }
 
 func TestRaysAreScalable(t *testing.T) {
-	r := NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
+	r := ray.NewRay(q.NewPoint(1, 2, 3), q.NewVector(0, 1, 0))
 	tr := transform.NewTransform().Scale(2, 3, 4)
 	nr := r.Transform(tr)
 
@@ -101,7 +105,7 @@ func TestRaysAreScalable(t *testing.T) {
 }
 
 func TestRayIsTransformedBeforeIntersect(t *testing.T) {
-	r := NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
 	s := entity.NewSphere()
 	s.SetTransform(transform.NewTransform().Scale(2, 2, 2))
 	xs := r.Intersect(s)
@@ -115,4 +119,70 @@ func TestRayIsTransformedBeforeIntersect(t *testing.T) {
 		t.Errorf("First intersection at wrong distance. Expected 7.0, got %v", xs.All[1].T)
 	}
 
+}
+
+func TestIntersectionsHaveComputedPoint(t *testing.T) {
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	s := entity.NewSphere()
+	xs := r.Intersect(s)
+	x := xs.All[0]
+	if !(x.Entity == s &&
+		x.Point.Equal(q.NewPoint(0, 0, -1)) &&
+		x.EyeVector.Equal(q.NewVector(0, 0, -1)) &&
+		x.Normal.Equal(q.NewVector(0, 0, -1))) {
+		t.Errorf("Failed to compute intersection helpers")
+	}
+}
+
+func TestIntersectionsHaveInsideFalse(t *testing.T) {
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	s := entity.NewSphere()
+	xs := r.Intersect(s)
+	if xs.Hit.Inside != false {
+		t.Errorf("Intersection thinks it's inside object when it is not.")
+	}
+}
+
+func TestIntersectionsHaveInsideTrue(t *testing.T) {
+	r := ray.NewRay(q.NewPoint(0, 0, 0), q.NewVector(0, 0, 1))
+	s := entity.NewSphere()
+	xs := r.Intersect(s)
+	if xs.Hit.Inside != true {
+		t.Errorf("Intersection thinks it's outside object when it is inside.")
+	}
+	if !xs.Hit.Normal.Equal(q.NewVector(0, 0, -1)) {
+		t.Errorf("Normal vector not computed correctly when inside object")
+	}
+}
+
+func TestShadingAnIntersection(t *testing.T) {
+	r := ray.NewRay(q.NewPoint(0, 0, -5), q.NewVector(0, 0, 1))
+	s := scene.DefaultScene()
+	xs := s.Intersections(r)
+
+	c := xs.Hit.Shade(s.Lights[0])
+	expected := color.New(0.38066, 0.47583, 0.2855)
+
+	if !c.Equal(expected) {
+		t.Errorf("Failed to shade hit. Expected %v, got %v", expected, c)
+	}
+}
+
+func TestShadingAnIntersectionInsideObject(t *testing.T) {
+	s := scene.DefaultScene()
+	l := light.NewPointLight(
+		color.White,
+		q.NewPoint(0, 0.25, 0),
+	)
+	r := ray.NewRay(
+		q.NewPoint(0, 0, 0),
+		q.NewVector(0, 0, 1),
+	)
+	xs := s.Intersections(r)
+	got := xs.All[2].Shade(l) // intersection at 0.5. We have intersections at -1.0, -0.5, 0.5 and 1.0
+	expected := color.New(0.90498, 0.90498, 0.90498)
+
+	if !got.Equal(expected) {
+		t.Errorf("Failed to shade hit %v inside object. Expected %v, got %v", xs.Hit, expected, got)
+	}
 }

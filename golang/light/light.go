@@ -1,7 +1,6 @@
 package light
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/bricef/ray-tracer/color"
@@ -57,10 +56,9 @@ func Phong(
 			specular = l.Intensity.Scale(m.Specular * factor)
 		}
 	}
-	if specular.R < 0 {
-		fmt.Printf("Ambient: %v\nDiffuse: %v\nSpecular: %v\n", ambient, diffuse, specular)
-		fmt.Printf("Total: %v\n\n", ambient.Add(diffuse).Add(specular))
-	}
+
+	// fmt.Printf("Ambient: %v\nDiffuse: %v\nSpecular: %v\n", ambient, diffuse, specular)
+	// fmt.Printf("Total: %v\n\n", ambient.Add(diffuse).Add(specular))
 
 	return specular.Add(ambient).Add(diffuse)
 }

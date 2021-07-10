@@ -3,8 +3,11 @@ package ray
 import (
 	"fmt"
 	"math"
+	"sort"
 
+	"github.com/bricef/ray-tracer/color"
 	"github.com/bricef/ray-tracer/entity"
+	"github.com/bricef/ray-tracer/light"
 	q "github.com/bricef/ray-tracer/quaternion"
 	"github.com/bricef/ray-tracer/transform"
 )
@@ -30,8 +33,28 @@ func (r Ray) String() string {
 }
 
 type Intersection struct {
-	T      float64
-	Entity *entity.Entity
+	T         float64
+	Entity    *entity.Entity
+	Point     q.Quaternion
+	EyeVector q.Quaternion
+	Normal    q.Quaternion
+	Inside    bool
+}
+
+func (i Intersection) String() string {
+	return fmt.Sprintf("Intersection(%v)", i.T)
+}
+
+func (i Intersection) Shade(l *light.PointLight) color.Color {
+	return light.Phong(i.Entity.Material, l, i.Point, i.EyeVector, i.Normal)
+}
+
+func (i Intersection) ShadeAll(ls []*light.PointLight) color.Color {
+	c := color.New(0, 0, 0)
+	for _, l := range ls {
+		c = c.Add(i.Shade(l))
+	}
+	return c
 }
 
 type Intersections struct {
@@ -39,8 +62,20 @@ type Intersections struct {
 	Hit *Intersection
 }
 
-func (i Intersection) String() string {
-	return fmt.Sprintf("Intersection(%v)", i.T)
+func (is Intersections) Merge(xs Intersections) Intersections {
+	newAll := []Intersection{}
+
+	newAll = append(newAll, is.All...)
+	newAll = append(newAll, xs.All...)
+
+	sort.Slice(newAll, func(i, j int) bool {
+		return newAll[i].T < newAll[j].T
+	})
+
+	return Intersections{
+		All: newAll,
+		Hit: &newAll[0],
+	}
 }
 
 func (r Ray) Hit(e *entity.Entity) *Intersection {
@@ -53,7 +88,22 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 	xs := make([]Intersection, 2)
 	var hit *Intersection
 	for i, v := range intersects(tray, e) {
-		x := Intersection{T: v, Entity: e}
+		p := r.Position(v)
+		n := e.Normal(p)
+		eye := r.Direction.Invert()
+		inside := false
+		if n.Dot(eye) < 0 { // inside entity check
+			n = n.Invert()
+			inside = true
+		}
+		x := Intersection{
+			T:         v,
+			Entity:    e,
+			Point:     p,
+			EyeVector: eye,
+			Normal:    n,
+			Inside:    inside,
+		}
 		xs[i] = x
 		if v >= 0 && ((hit == nil) || v < hit.T) {
 			hit = &x

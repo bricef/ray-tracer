@@ -8,7 +8,7 @@ import (
 	"github.com/bricef/ray-tracer/color"
 	"github.com/bricef/ray-tracer/material"
 	"github.com/bricef/ray-tracer/quaternion"
-	. "github.com/bricef/ray-tracer/raytracer"
+	q "github.com/bricef/ray-tracer/quaternion"
 )
 
 type TestCase struct {
@@ -24,56 +24,56 @@ func TestPhongLightingScenarios(t *testing.T) {
 	cases := []TestCase{
 		{
 			Material: material.NewMaterial(),
-			Position: Point(0, 0, 0),
-			Eye:      Vector(0, 0, -1),
-			Normal:   Vector(0, 0, -1),
+			Position: q.NewPoint(0, 0, 0),
+			Eye:      q.NewVector(0, 0, -1),
+			Normal:   q.NewVector(0, 0, -1),
 			Light: NewPointLight(
 				color.New(1, 1, 1),
-				Point(0, 0, -10),
+				q.NewPoint(0, 0, -10),
 			),
 			Expected: color.New(1.9, 1.9, 1.9),
 		},
 		{
 			Material: material.NewMaterial(),
-			Position: Point(0, 0, 0),
-			Eye:      Vector(0, math.Sqrt2/2, -math.Sqrt2/2),
-			Normal:   Vector(0, 0, -1),
+			Position: q.NewPoint(0, 0, 0),
+			Eye:      q.NewVector(0, math.Sqrt2/2, -math.Sqrt2/2),
+			Normal:   q.NewVector(0, 0, -1),
 			Light: NewPointLight(
 				color.New(1, 1, 1),
-				Point(0, 0, -10),
+				q.NewPoint(0, 0, -10),
 			),
 			Expected: color.New(1, 1, 1),
 		},
 		{
 			Material: material.NewMaterial(),
-			Position: Point(0, 0, 0),
-			Eye:      Vector(0, 0, -1),
-			Normal:   Vector(0, 0, -1),
+			Position: q.NewPoint(0, 0, 0),
+			Eye:      q.NewVector(0, 0, -1),
+			Normal:   q.NewVector(0, 0, -1),
 			Light: NewPointLight(
 				color.New(1, 1, 1),
-				Point(0, 10, -10),
+				q.NewPoint(0, 10, -10),
 			),
 			Expected: color.New(0.736396103, 0.736396103, 0.736396103),
 		},
 		{
 			Material: material.NewMaterial(),
-			Position: Point(0, 0, 0),
-			Eye:      Vector(0, -math.Sqrt2/2, -math.Sqrt2/2),
-			Normal:   Vector(0, 0, -1),
+			Position: q.NewPoint(0, 0, 0),
+			Eye:      q.NewVector(0, -math.Sqrt2/2, -math.Sqrt2/2),
+			Normal:   q.NewVector(0, 0, -1),
 			Light: NewPointLight(
 				color.New(1, 1, 1),
-				Point(0, 10, -10),
+				q.NewPoint(0, 10, -10),
 			),
 			Expected: color.New(1.6363961031, 1.6363961031, 1.6363961031),
 		},
 		{
 			Material: material.NewMaterial(),
-			Position: Point(0, 0, 0),
-			Eye:      Vector(0, 0, -10),
-			Normal:   Vector(0, 0, -1),
+			Position: q.NewPoint(0, 0, 0),
+			Eye:      q.NewVector(0, 0, -10),
+			Normal:   q.NewVector(0, 0, -1),
 			Light: NewPointLight(
 				color.New(1, 1, 1),
-				Point(0, 0, 10),
+				q.NewPoint(0, 0, 10),
 			),
 			Expected: color.New(0.1, 0.1, 0.1),
 		},

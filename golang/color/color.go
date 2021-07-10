@@ -1,6 +1,7 @@
 package color
 
 import (
+	"fmt"
 	"math"
 
 	utils "github.com/bricef/ray-tracer/utils"
@@ -45,4 +46,9 @@ func (c Color) Cutoff() Color {
 		math.Min(c.G, 1.0),
 		math.Min(c.B, 1.0),
 	}
+}
+
+func (c Color) String() string {
+	return fmt.Sprintf("Color(%v,%v,%v)", c.R, c.G, c.B)
+	// return fmt.Sprintf("Color(%v,%v,%v)", int(c.R*255), int(c.G*255), int(c.B*255))
 }
