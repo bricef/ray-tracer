@@ -127,3 +127,11 @@ func ViewTransform(from quaternion.Quaternion, to quaternion.Quaternion, up quat
 	}
 	return orientation.Translate(-from.X, -from.Y, -from.Z)
 }
+
+func (t Transform) MoveTo(p quaternion.Quaternion) Transform {
+	nt := t
+	nt.Set(0, 3, p.X)
+	nt.Set(1, 3, p.Y)
+	nt.Set(2, 3, p.Z)
+	return nt
+}

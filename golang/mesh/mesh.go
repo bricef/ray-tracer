@@ -6,4 +6,5 @@ import (
 
 type Mesh interface {
 	Normal(quaternion.Quaternion) quaternion.Quaternion
+	String() string
 }

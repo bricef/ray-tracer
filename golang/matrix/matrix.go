@@ -15,6 +15,14 @@ type Matrix struct {
 	Values  [][]float64
 }
 
+func (m Matrix) String() string {
+	return fmt.Sprintf("\nMatrix(\n\t{%v, %v, %v, %v},\n\t{%v, %v, %v, %v},\n\t{%v, %v, %v, %v},\n\t{%v, %v, %v, %v}\n)\n",
+		m.Values[0][0], m.Values[0][1], m.Values[0][2], m.Values[0][3],
+		m.Values[1][0], m.Values[1][1], m.Values[1][2], m.Values[1][3],
+		m.Values[2][0], m.Values[2][1], m.Values[2][2], m.Values[2][3],
+		m.Values[3][0], m.Values[3][1], m.Values[3][2], m.Values[3][3])
+}
+
 func New(values [][]float64) Matrix {
 	return Matrix{
 		len(values),

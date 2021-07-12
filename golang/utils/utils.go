@@ -2,8 +2,10 @@ package utils
 
 import (
 	"errors"
+	"log"
 	"math"
 	"os"
+	"time"
 )
 
 const float64EqualityThreshold = 1e-5
@@ -33,4 +35,9 @@ func EnsureDir(dirName string) error {
 
 func DegressToRadians(d float64) float64 {
 	return (d / 360.0) * 2 * math.Pi
+}
+
+func TimeTrack(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
 }

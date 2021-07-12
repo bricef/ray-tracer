@@ -62,7 +62,9 @@ func (s *Scene) Intersections(r ray.Ray) ray.Intersections {
 	xs := ray.Intersections{}
 	for _, e := range s.Entities {
 		newxs := r.Intersect(e)
-		xs = xs.Merge(newxs)
+		if len(newxs.All) > 0 {
+			xs = xs.Merge(newxs)
+		}
 	}
 	return xs
 }
@@ -70,6 +72,7 @@ func (s *Scene) Intersections(r ray.Ray) ray.Intersections {
 func (s *Scene) Shade(r ray.Ray) color.Color {
 	xs := s.Intersections(r)
 	if xs.Hit != nil {
+		// fmt.Printf("Hit\n")
 		return xs.Hit.ShadeAll(s.Lights)
 	}
 	return s.BackgroundColor

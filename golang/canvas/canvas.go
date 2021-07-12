@@ -80,7 +80,7 @@ func (c *ImageCanvas) Set(x int, y int, value color.Color) error {
 		return fmt.Errorf("out of bounds. Pixel %v,%v doesn't exist on canvas sized %v,%v", x, y, c.width, c.height)
 	}
 	c.pixels[x][y] = value
-
+	// fmt.Printf("[%v,%v]=%v\n", x, y, value)
 	return nil
 }
 

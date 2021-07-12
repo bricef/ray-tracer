@@ -1,13 +1,17 @@
 package camera
 
 import (
+	"fmt"
 	"math"
+	"time"
 
 	"github.com/bricef/ray-tracer/canvas"
+	"github.com/bricef/ray-tracer/entity"
 	"github.com/bricef/ray-tracer/quaternion"
 	"github.com/bricef/ray-tracer/ray"
 	"github.com/bricef/ray-tracer/scene"
 	"github.com/bricef/ray-tracer/transform"
+	"github.com/bricef/ray-tracer/utils"
 )
 
 type Camera struct {
@@ -54,7 +58,7 @@ func (c *Camera) ProjectPixelRay(u, v int) ray.Ray {
 	worldY := c.HalfHeight - yoff
 
 	pixel := c.Transform.Inverse().Apply(quaternion.NewPoint(worldX, worldY, -c.Distance))
-	origin := c.Transform.Apply(quaternion.NewPoint(0, 0, 0))
+	origin := c.Transform.Inverse().Apply(quaternion.NewPoint(0, 0, 0))
 	direction := pixel.Sub(origin).Normalize()
 	return ray.NewRay(
 		origin,
@@ -68,6 +72,7 @@ func (c *Camera) SetTransform(t transform.Transform) *Camera {
 }
 
 func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
+	defer utils.TimeTrack(time.Now(), "Render")
 	pixels := frame.Pixels()
 	for pixels.Next() {
 		u, v := pixels.Get()
@@ -75,4 +80,31 @@ func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 		pix := s.Shade(r)
 		frame.Set(u, v, pix)
 	}
+}
+
+func (c *Camera) LookAt(e interface{}) *Camera {
+	var target quaternion.Quaternion
+	switch t := e.(type) {
+	case entity.Entity:
+		target = t.Transform.Apply(quaternion.NewPoint(0, 0, 0))
+	case quaternion.Quaternion:
+		if quaternion.IsPoint(t) {
+			target = t
+		}
+	default:
+		panic(fmt.Errorf("Camera cannot look at %v", e))
+	}
+
+	self := c.Transform.Apply(quaternion.NewPoint(0, 0, 0))
+	c.Transform = transform.ViewTransform(
+		self,
+		target,
+		quaternion.NewVector(0, 1, 0),
+	)
+	return c
+}
+
+func (c *Camera) MoveTo(q quaternion.Quaternion) *Camera {
+	c.Transform = c.Transform.MoveTo(q)
+	return c
 }

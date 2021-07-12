@@ -137,6 +137,12 @@ func TestCases(t *testing.T) {
 			Point(2, 3, 4),
 			Point(2, 3, 7),
 		},
+		{
+			"MoveTo",
+			Transform().Translate(3, 5, 6).MoveTo(Point(1, 2, 3)),
+			Point(0, 0, 0),
+			Point(1, 2, 3),
+		},
 	}
 	for _, c := range cases {
 		result := c.transform.Apply(c.input)
