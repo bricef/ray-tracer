@@ -69,7 +69,7 @@ func TestCameraRender(t *testing.T) {
 	c := CameraFromFOV(11, 11, halfPi)
 	c.SetTransform(
 		transform.ViewTransform(
-			quaternion.NewPoint(0, 0, 5),
+			quaternion.NewPoint(0, 0, -5),
 			quaternion.NewPoint(0, 0, 0),
 			quaternion.NewVector(0, 1, 0),
 		),
