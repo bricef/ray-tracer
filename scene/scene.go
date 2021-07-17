@@ -77,3 +77,35 @@ func (s *Scene) Shade(r ray.Ray) color.Color {
 	}
 	return s.BackgroundColor
 }
+
+func (s *Scene) Obstructed(a q.Quaternion, b q.Quaternion) bool {
+	path := a.Sub(b)
+	distance := path.Magnitude()
+	direction := path.Normalize()
+	r := ray.NewRay(b, direction)
+	xs := s.Intersections(r)
+	fmt.Printf("Hits: %v\n", xs)
+	if xs.Hit != nil && xs.Hit.T <= distance {
+		return true
+	}
+	return false
+}
+
+func (s *Scene) Cast(r ray.Ray) color.Color {
+	c := color.New(0, 0, 0)
+	xs := s.Intersections(r)
+	if xs.Hit != nil {
+		for _, l := range s.Lights {
+			if s.Obstructed(xs.Hit.Point, l.Position) {
+				contribution := light.PhongShadow(xs.Hit.Entity.Material, l, xs.Hit.Point, xs.Hit.EyeVector, xs.Hit.Normal)
+				c = c.Add(contribution)
+			} else {
+				contribution := light.Phong(xs.Hit.Entity.Material, l, xs.Hit.Point, xs.Hit.EyeVector, xs.Hit.Normal)
+				c = c.Add(contribution)
+			}
+
+		}
+		return c
+	}
+	return s.BackgroundColor
+}

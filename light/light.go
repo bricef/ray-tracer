@@ -63,6 +63,14 @@ func Phong(
 	return specular.Add(ambient).Add(diffuse)
 }
 
-// func Phong(e *entity.Entity, l *PointLight, hitPosition quaternion.Quaternion, incident ray.Ray) color.Color {
-// 	return e.Color
-// }
+func PhongShadow(
+	m *material.Material,
+	l *PointLight,
+	point quaternion.Quaternion,
+	eye quaternion.Quaternion,
+	normal quaternion.Quaternion,
+) color.Color {
+	effectiveColor := m.Color.Mult(l.Intensity)
+	ambient := effectiveColor.Scale(m.Ambient)
+	return ambient
+}

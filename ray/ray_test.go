@@ -186,3 +186,24 @@ func TestShadingAnIntersectionInsideObject(t *testing.T) {
 		t.Errorf("Failed to shade hit %v inside object. Expected %v, got %v", xs.Hit, expected, got)
 	}
 }
+
+func TestMergeIntersectionsNeverNegativeHit(t *testing.T) {
+	a := ray.Intersections{
+		All: []ray.Intersection{
+			{T: -4},
+			{T: -2},
+		},
+		Hit: nil,
+	}
+	b := ray.Intersections{
+		All: []ray.Intersection{
+			{T: -5},
+			{T: -6},
+		},
+		Hit: nil,
+	}
+	xs := a.Merge(b)
+	if xs.Hit != nil {
+		t.Errorf("Merged intersection hit is negative")
+	}
+}

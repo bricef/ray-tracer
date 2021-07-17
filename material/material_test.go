@@ -1,6 +1,8 @@
 package material
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestDefaultMaterial(t *testing.T) {
 	m := NewMaterial()

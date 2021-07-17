@@ -86,16 +86,16 @@ func (is Intersections) Merge(xs Intersections) Intersections {
 		return newAll[i].T < newAll[j].T
 	})
 
-	hitIndex := len(newAll) - 1
+	var hit *Intersection
 	for i, x := range newAll {
-		if x.T > 0 && x.T < newAll[hitIndex].T {
-			hitIndex = i
+		if x.T > 0 && ((hit == nil) || x.T < hit.T) {
+			hit = &newAll[i]
 		}
 	}
 
 	return Intersections{
 		All: newAll,
-		Hit: &newAll[hitIndex],
+		Hit: hit,
 	}
 }
 
@@ -106,7 +106,7 @@ func (r Ray) Hit(e *entity.Entity) *Intersection {
 func (r Ray) Intersect(e *entity.Entity) Intersections {
 	tray := r.Transform(e.Transform.Inverse())
 
-	icoords := intersects(tray, e)
+	icoords := intersects(tray, e) // []float64
 
 	// Short circuit on miss
 	if len(icoords) == 0 {
@@ -115,8 +115,9 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 
 	xs := make([]Intersection, len(icoords))
 	var hit *Intersection
-	for i, v := range icoords {
-		p := r.Position(v)
+	hit = nil
+	for i, t := range icoords {
+		p := r.Position(t)
 		n := e.Normal(p)
 		eye := r.Direction.Invert()
 		inside := false
@@ -125,7 +126,7 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 			inside = true
 		}
 		x := Intersection{
-			T:         v,
+			T:         t,
 			Entity:    e,
 			Point:     p,
 			EyeVector: eye,
@@ -133,9 +134,12 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 			Inside:    inside,
 		}
 		xs[i] = x
-		if v >= 0 && ((hit == nil) || v < hit.T) {
+		if t >= 0 && ((hit == nil) || t < hit.T) {
 			hit = &x
 		}
+	}
+	if hit != nil && hit.T < 0 {
+		panic(fmt.Errorf("PANIC: Hit T < 0: %v", hit))
 	}
 	return Intersections{All: xs, Hit: hit}
 }
