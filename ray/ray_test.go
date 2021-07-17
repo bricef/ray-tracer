@@ -207,3 +207,16 @@ func TestMergeIntersectionsNeverNegativeHit(t *testing.T) {
 		t.Errorf("Merged intersection hit is negative")
 	}
 }
+
+func TestOverPointAboveSurface(t *testing.T) {
+	r := ray.NewRay(
+		q.NewPoint(0, 0, -5),
+		q.NewVector(0, 0, 1))
+	s := entity.NewSphere().SetTransform(transform.NewTransform().Translate(0, 0, 1))
+	xs := r.Intersect(s)
+	result := xs.Hit.OverPoint.Z
+	if !((result < -utils.Epsilon/2.0) && xs.Hit.Point.Z > result) {
+		t.Errorf("Failed to compute overpoint. Got %v", xs.Hit.OverPoint)
+	}
+
+}

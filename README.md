@@ -5,6 +5,10 @@ Brice's attempt at the ray tracer challenge in Go
 
 ## Chapters
 
+### Chapter 8
+
+![Rendered scene with shadows](output/chapter8.png)
+
 ### Chapter 7
 
 ![Rendered scene](output/chapter7.png)

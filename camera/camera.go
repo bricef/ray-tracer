@@ -76,9 +76,9 @@ func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 	pixels := frame.Pixels()
 	for pixels.Next() {
 		u, v := pixels.Get()
-		if u == 0 {
-			fmt.Printf("Rendering Row %v of %v. (%v,%v)\n", v, frame.Height(), u, v)
-		}
+		// if u == 0 {
+		// 	fmt.Printf("Rendering Row %v of %v. (%v,%v)\n", v, frame.Height(), u, v)
+		// }
 		r := c.ProjectPixelRay(u, v)
 		pix := s.Cast(r)
 		frame.Set(u, v, pix)

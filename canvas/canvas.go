@@ -32,16 +32,18 @@ type PixelIterator struct {
 }
 
 func (i *PixelIterator) Get() (int, int) {
-	return i.Cx, i.Cy
-}
-
-func (i *PixelIterator) Next() bool {
+	x, y := i.Cx, i.Cy
 	if i.Cx >= i.Canvas.Width() {
 		i.Cx = 0
 		i.Cy += 1
 	} else {
 		i.Cx += 1
 	}
+	return x, y
+}
+
+func (i *PixelIterator) Next() bool {
+
 	more := i.Cx*i.Cy <= (i.Canvas.Height()-1)*(i.Canvas.Width()-1)
 	return more
 }

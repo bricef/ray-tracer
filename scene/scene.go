@@ -95,7 +95,7 @@ func (s *Scene) Cast(r ray.Ray) color.Color {
 	xs := s.Intersections(r)
 	if xs.Hit != nil {
 		for _, l := range s.Lights {
-			if s.Obstructed(xs.Hit.Point, l.Position) {
+			if s.Obstructed(xs.Hit.OverPoint, l.Position) {
 				contribution := light.PhongShadow(xs.Hit.Entity.Material, l, xs.Hit.Point, xs.Hit.EyeVector, xs.Hit.Normal)
 				c = c.Add(contribution)
 			} else {

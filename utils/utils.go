@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-const float64EqualityThreshold = 1e-5
+const Epsilon = 1e-5
 
 func AlmostEqual(a, b float64) bool {
-	return math.Abs(a-b) <= float64EqualityThreshold
+	return math.Abs(a-b) <= Epsilon
 }
 
 func EnsureDir(dirName string) error {

@@ -10,6 +10,7 @@ import (
 	"github.com/bricef/ray-tracer/light"
 	q "github.com/bricef/ray-tracer/quaternion"
 	"github.com/bricef/ray-tracer/transform"
+	"github.com/bricef/ray-tracer/utils"
 )
 
 type Ray struct {
@@ -39,6 +40,7 @@ type Intersection struct {
 	EyeVector q.Quaternion
 	Normal    q.Quaternion
 	Inside    bool
+	OverPoint q.Quaternion
 }
 
 func (i Intersection) String() string {
@@ -132,6 +134,7 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 			EyeVector: eye,
 			Normal:    n,
 			Inside:    inside,
+			OverPoint: n.Scale(utils.Epsilon).Add(p),
 		}
 		xs[i] = x
 		if t >= 0 && ((hit == nil) || t < hit.T) {
@@ -139,7 +142,7 @@ func (r Ray) Intersect(e *entity.Entity) Intersections {
 		}
 	}
 	if hit != nil && hit.T < 0 {
-		panic(fmt.Errorf("PANIC: Hit T < 0: %v", hit))
+		panic(fmt.Errorf("Hit.T < 0: %v", hit))
 	}
 	return Intersections{All: xs, Hit: hit}
 }
