@@ -84,7 +84,6 @@ func (s *Scene) Obstructed(a q.Quaternion, b q.Quaternion) bool {
 	direction := path.Normalize()
 	r := ray.NewRay(b, direction)
 	xs := s.Intersections(r)
-	fmt.Printf("Hits: %v\n", xs)
 	if xs.Hit != nil && xs.Hit.T <= distance {
 		return true
 	}
