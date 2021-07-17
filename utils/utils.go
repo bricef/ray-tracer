@@ -15,7 +15,7 @@ func AlmostEqual(a, b float64) bool {
 }
 
 func EnsureDir(dirName string) error {
-	err := os.Mkdir(dirName, 0755)
+	err := os.MkdirAll(dirName, 0755)
 	if err == nil {
 		return nil
 	}

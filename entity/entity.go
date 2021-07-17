@@ -11,6 +11,7 @@ type Entity struct {
 	Transform transform.Transform
 	Mesh      *mesh.Mesh
 	Material  *material.Material
+	Velocity  *quaternion.Quaternion
 }
 
 func New(m *mesh.Mesh) *Entity {
@@ -39,4 +40,16 @@ func (e *Entity) Normal(worldPoint quaternion.Quaternion) quaternion.Quaternion 
 	worldNormal.W = 0.0
 	return worldNormal.Normalize()
 
+}
+
+func (e *Entity) Tick() {
+	if e.Velocity != nil {
+
+		e.Transform = e.Transform.Translate(e.Velocity.X, e.Velocity.Y, e.Velocity.Z)
+	}
+}
+
+func (e *Entity) SetVelocity(v quaternion.Quaternion) *Entity {
+	e.Velocity = &v
+	return e
 }

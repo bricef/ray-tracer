@@ -108,3 +108,10 @@ func (s *Scene) Cast(r ray.Ray) color.Color {
 	}
 	return s.BackgroundColor
 }
+
+func (s *Scene) Tick() *Scene {
+	for _, e := range s.Entities {
+		e.Tick()
+	}
+	return s
+}
