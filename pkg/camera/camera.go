@@ -105,7 +105,6 @@ func (c *Camera) SaveFrame(s *scene.Scene, filename string) {
 		bar.Incr()
 	}
 	frame.WritePNG(filename)
-	fmt.Printf("Wrote output to %v\n", filename)
 }
 
 func (c *Camera) LookAt(e interface{}) *Camera {

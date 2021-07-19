@@ -2,8 +2,11 @@
 
 Brice's attempt at the ray tracer challenge in Go
 
-
 ## Chapters
+
+### Chapter 9 – Planes
+
+![Lit sphere on a plane](output/chapter9.png)
 
 ### Chapter 8 – Shadows
 
