@@ -1,9 +1,14 @@
 
 
-all: bin/chapter2 bin/chapter4 bin/chapter5 bin/chapter6 bin/chapter7 bin/chapter8 bin/chapter8-animation bin/chapter8-multilight
 
-bin/%: cmd/%/main.go
-	go build -o $@ $^
+
+BINARY_DIRS = $(sort $(subst cmd,bin,$(wildcard ./cmd/*)))
+SOURCES = $(shell find pkg -type f -name '*.go')
+
+all: ${BINARY_DIRS}
+
+bin/%: cmd/%/main.go ${SOURCES}
+	go build -o $@ $<
 
 clean:
 	rm -rf bin
