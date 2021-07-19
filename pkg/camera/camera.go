@@ -3,6 +3,7 @@ package camera
 import (
 	"fmt"
 	m "math"
+	"path/filepath"
 	"time"
 
 	"github.com/bricef/ray-tracer/pkg/canvas"
@@ -11,6 +12,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/ray"
 	"github.com/bricef/ray-tracer/pkg/scene"
 	"github.com/bricef/ray-tracer/pkg/utils"
+	"github.com/gosuri/uiprogress"
 )
 
 type Camera struct {
@@ -75,13 +77,35 @@ func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 	pixels := frame.Pixels()
 	for pixels.More() {
 		u, v := pixels.Get()
-		// if u == 0 {
-		// 	fmt.Printf("Rendering Row %v of %v. (%v,%v)\n", v, frame.Height(), u, v)
-		// }
 		r := c.ProjectPixelRay(u, v)
 		pix := s.Cast(r)
 		frame.Set(u, v, pix)
 	}
+}
+
+func (c *Camera) SaveFrame(s *scene.Scene, filename string) {
+	// Set up frame to render to
+	frame := canvas.NewImageCanvas(c.FrameWidth, c.FrameHeight)
+
+	// Set up progress bar
+	uiprogress.Start()
+	bar := uiprogress.AddBar(frame.Width() * frame.Height())
+	bar.AppendCompleted()
+	bar.PrependElapsed()
+	bar.PrependFunc(func(b *uiprogress.Bar) string {
+		return filepath.Base(filename)
+	})
+
+	pixels := frame.Pixels()
+	for pixels.More() {
+		u, v := pixels.Get()
+		r := c.ProjectPixelRay(u, v)
+		pix := s.Cast(r)
+		frame.Set(u, v, pix)
+		bar.Incr()
+	}
+	frame.WritePNG(filename)
+	fmt.Printf("Wrote output to %v\n", filename)
 }
 
 func (c *Camera) LookAt(e interface{}) *Camera {

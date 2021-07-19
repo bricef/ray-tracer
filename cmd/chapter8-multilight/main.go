@@ -5,7 +5,6 @@ import (
 	"path"
 
 	"github.com/bricef/ray-tracer/pkg/camera"
-	"github.com/bricef/ray-tracer/pkg/canvas"
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/entities"
 	"github.com/bricef/ray-tracer/pkg/lighting"
@@ -21,9 +20,6 @@ func main() {
 	// Set up output dir
 	OUTPUT_DIR := "output/chapter8"
 	utils.EnsureDir(OUTPUT_DIR)
-
-	// set up frame
-	frame := canvas.NewImageCanvas(width, height)
 
 	// set up scene
 	s := scene.NewScene()
@@ -100,6 +96,6 @@ func main() {
 		)
 
 	filepath := path.Join(OUTPUT_DIR, "chapter8-multilight.png")
-	utils.SaveFrame(frame, c, s, filepath)
+	c.SaveFrame(s, filepath)
 
 }
