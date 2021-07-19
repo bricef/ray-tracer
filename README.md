@@ -8,6 +8,7 @@ Brice's attempt at the ray tracer challenge in Go
 ### Chapter 8 – Shadows
 
 ![Rendered scene with shadows](output/chapter8.png)
+![Rendered scene with multiple lights](output/chapter8/chapter8-multilight.png)
 ![Animated render of shadows on a sphere](output/chapter8/animation/out.gif)
 
 ### Chapter 7 – Scenes

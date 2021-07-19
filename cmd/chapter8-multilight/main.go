@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	m "math"
 	"path"
 
@@ -16,18 +15,11 @@ import (
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
-func saveFrame(frame *canvas.ImageCanvas, c *camera.Camera, s *scene.Scene, filepath string) {
-	c.Render(s, frame)
-	frame.WritePNG(filepath)
-	fmt.Printf("Wrote output to %v\n", filepath)
-}
-
 func main() {
-	width, height := 50, 25
-	MAX_TICKS := 100
+	width, height := 1000, 500
 
 	// Set up output dir
-	OUTPUT_DIR := "output/chapter8/multilight"
+	OUTPUT_DIR := "output/chapter8"
 	utils.EnsureDir(OUTPUT_DIR)
 
 	// set up frame
@@ -90,8 +82,12 @@ func main() {
 			Scale(0.33, 0.33, 0.33),
 	)
 
-	s.Add( // light
+	s.Add( // light 1
 		lighting.NewPointLight(color.White).Translate(-10, 10, -10),
+	)
+
+	s.Add( // light 2
+		lighting.NewPointLight(color.New(0.6, 0.2, 0.3)).Translate(10, 10, -10),
 	)
 
 	c := camera.
@@ -103,12 +99,7 @@ func main() {
 				math.NewVector(0, 1, 0)),
 		)
 
-	for tick := 0; tick <= MAX_TICKS; tick += 1 {
-		s.Tick()
-		filepath := path.Join(OUTPUT_DIR, fmt.Sprintf("frame-%v.png", tick))
-		saveFrame(frame, c, s, filepath)
-	}
-
-	// Write out to file
+	filepath := path.Join(OUTPUT_DIR, "chapter8-multilight.png")
+	utils.SaveFrame(frame, c, s, filepath)
 
 }

@@ -2,10 +2,15 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math"
 	"os"
 	"time"
+
+	"github.com/bricef/ray-tracer/pkg/camera"
+	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/scene"
 )
 
 const Epsilon = 1e-5
@@ -40,4 +45,11 @@ func DegressToRadians(d float64) float64 {
 func TimeTrack(start time.Time, name string) {
 	elapsed := time.Since(start)
 	log.Printf("%s took %s", name, elapsed)
+}
+
+func SaveFrame(frame *canvas.ImageCanvas, c *camera.Camera, s *scene.Scene, filepath string) {
+	// progress := make(chan float64)
+	c.Render(s, frame)
+	frame.WritePNG(filepath)
+	fmt.Printf("Wrote output to %v\n", filepath)
 }
