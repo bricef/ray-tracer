@@ -30,9 +30,20 @@ type Material interface {
 	Shininess() float64
 }
 
+type Ray interface {
+	Origin() math.Point
+	Direction() math.Vector
+	Position(t float64) math.Point
+	// Hit(Entity) ray.Intersection
+	// Intersect(Entity) ray.Intersections
+	Transform(math.Transform) Ray
+	Equal(Ray) bool
+}
+
 type Mesh interface {
 	Component
 	Normal(meshPoint math.Point) math.Vector
+	Intersect(Ray) []float64
 }
 
 type Kinematic interface {

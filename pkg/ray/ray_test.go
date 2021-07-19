@@ -107,7 +107,7 @@ func TestRaysAreTransformable(t *testing.T) {
 	tr := math.NewTransform().Translate(3, 4, 5)
 	nr := r.Transform(tr)
 
-	if !nr.Origin.Equal(math.NewPoint(4, 6, 8)) || !nr.Direction.Equal(math.NewVector(0, 1, 0)) {
+	if !nr.Origin().Equal(math.NewPoint(4, 6, 8)) || !nr.Direction().Equal(math.NewVector(0, 1, 0)) {
 		t.Errorf("Failed to transform Ray %v with %v. Got %v", r, tr, nr)
 	}
 }
@@ -117,7 +117,7 @@ func TestRaysAreScalable(t *testing.T) {
 	tr := math.NewTransform().Scale(2, 3, 4)
 	nr := r.Transform(tr)
 
-	if !nr.Origin.Equal(math.NewPoint(2, 6, 12)) || !nr.Direction.Equal(math.NewVector(0, 3, 0)) {
+	if !nr.Origin().Equal(math.NewPoint(2, 6, 12)) || !nr.Direction().Equal(math.NewVector(0, 3, 0)) {
 		t.Errorf("Failed to transform Ray %v with %v. Got %v", r, tr, nr)
 	}
 }
@@ -202,15 +202,15 @@ func TestShadingAnIntersectionInsideObject(t *testing.T) {
 }
 
 func TestMergeIntersectionsNeverNegativeHit(t *testing.T) {
-	a := ray.Intersections{
-		All: []ray.Intersection{
+	a := &ray.Intersections{
+		All: []*ray.Intersection{
 			{T: -4},
 			{T: -2},
 		},
 		Hit: nil,
 	}
-	b := ray.Intersections{
-		All: []ray.Intersection{
+	b := &ray.Intersections{
+		All: []*ray.Intersection{
 			{T: -5},
 			{T: -6},
 		},

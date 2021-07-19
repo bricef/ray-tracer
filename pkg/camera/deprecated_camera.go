@@ -78,7 +78,7 @@ func (c *DeprecatedCamera) Render(canvas canvas.Canvas, scene []core.Entity, lig
 						e.GetMaterial(),
 						l,
 						hitPoint,
-						r.Direction.Invert(),
+						r.Direction().Invert(),
 						e.Normal(hitPoint),
 					)
 

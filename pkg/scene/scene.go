@@ -54,8 +54,8 @@ func DefaultScene() *Scene {
 	return s
 }
 
-func (s *Scene) Intersections(r ray.Ray) ray.Intersections {
-	xs := ray.Intersections{}
+func (s *Scene) Intersections(r ray.Ray) *ray.Intersections {
+	xs := ray.NewIntersections()
 	for _, e := range s.Entities {
 		mat := e.GetMaterial()
 		mesh := e.GetMesh()
