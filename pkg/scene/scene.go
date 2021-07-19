@@ -57,9 +57,10 @@ func DefaultScene() *Scene {
 func (s *Scene) Intersections(r ray.Ray) ray.Intersections {
 	xs := ray.Intersections{}
 	for _, e := range s.Entities {
-		newxs := r.Intersect(e)
-		if len(newxs.All) > 0 {
-			xs = xs.Merge(newxs)
+		mat := e.GetMaterial()
+		mesh := e.GetMesh()
+		if mat != nil && mesh != nil { // Ignore entities without mesh or material
+			xs = xs.Merge(r.Intersect(e))
 		}
 	}
 	return xs

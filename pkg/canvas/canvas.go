@@ -33,7 +33,7 @@ type PixelIterator struct {
 
 func (i *PixelIterator) Get() (int, int) {
 	x, y := i.Cx, i.Cy
-	if i.Cx >= i.Canvas.Width() {
+	if i.Cx >= i.Canvas.Width()-1 {
 		i.Cx = 0
 		i.Cy += 1
 	} else {
@@ -42,9 +42,8 @@ func (i *PixelIterator) Get() (int, int) {
 	return x, y
 }
 
-func (i *PixelIterator) Next() bool {
-
-	more := i.Cx*i.Cy <= (i.Canvas.Height()-1)*(i.Canvas.Width()-1)
+func (i *PixelIterator) More() bool {
+	more := i.Cx <= i.Canvas.Width()-1 && i.Cy <= i.Canvas.Height()-1
 	return more
 }
 
@@ -91,7 +90,7 @@ func (c *ImageCanvas) Get(x, y int) (color.Color, error) {
 }
 
 func (c *ImageCanvas) Image() image.Image {
-	img := image.NewNRGBA64(image.Rect(0, 0, c.width-1, c.height-1))
+	img := image.NewNRGBA64(image.Rect(0, 0, c.width, c.height))
 	for x, column := range c.pixels {
 		for y, pixel := range column {
 			pixel = pixel.Cutoff()

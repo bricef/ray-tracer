@@ -29,3 +29,17 @@ func TestWriteToCanvas(t *testing.T) {
 		t.Errorf("Failed to set pixel on canvas. Expected %v, got %v. (%v)", red, pixel, err)
 	}
 }
+
+func TestCanvasPixelIteratorIteratesOverAllPixels(t *testing.T) {
+	c := NewImageCanvas(10, 10)
+	pi := c.Pixels()
+	count := 0
+	for pi.More() {
+		pi.Get()
+		count += 1
+	}
+	expected := 100
+	if count != expected {
+		t.Errorf("Pixel iterator returned wrong number of pixels. Expected %v got %v.", expected, count)
+	}
+}

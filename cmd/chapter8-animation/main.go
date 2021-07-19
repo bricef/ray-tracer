@@ -12,6 +12,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/lighting"
 	"github.com/bricef/ray-tracer/pkg/material"
 	"github.com/bricef/ray-tracer/pkg/math"
+	"github.com/bricef/ray-tracer/pkg/physics"
 	"github.com/bricef/ray-tracer/pkg/scene"
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
@@ -24,7 +25,7 @@ func saveFrame(frame *canvas.ImageCanvas, c *camera.Camera, s *scene.Scene, file
 }
 
 func main() {
-	width, height := 500, 250
+	width, height := 100, 50
 	MAX_TICKS := 100
 
 	// Set up output dir
@@ -50,6 +51,9 @@ func main() {
 			material.NewMaterial().
 				SetColor(color.New(0.3, 0.3, 0.3)).
 				SetSpecular(0.0),
+		).
+		AddComponent(
+			physics.NewKinematic(),
 		).
 		Translate(float64(moonOffset), 0, 25)
 

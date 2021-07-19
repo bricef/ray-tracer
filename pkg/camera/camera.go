@@ -73,7 +73,7 @@ func (c *Camera) SetTransform(t math.Transform) *Camera {
 func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 	defer utils.TimeTrack(time.Now(), "Render")
 	pixels := frame.Pixels()
-	for pixels.Next() {
+	for pixels.More() {
 		u, v := pixels.Get()
 		// if u == 0 {
 		// 	fmt.Printf("Rendering Row %v of %v. (%v,%v)\n", v, frame.Height(), u, v)

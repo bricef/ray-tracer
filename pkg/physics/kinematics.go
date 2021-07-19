@@ -12,7 +12,10 @@ type Kinematic struct {
 }
 
 func NewKinematic() core.Kinematic {
-	return &Kinematic{}
+	return &Kinematic{
+		math.NewVector(0, 0, 0),
+		math.NewVector(0, 0, 0),
+	}
 }
 
 func (c *Kinematic) Type() core.ComponentType {

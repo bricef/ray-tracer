@@ -54,7 +54,7 @@ func (v *Viewport) FrameXYToViewportXY(frame canvas.Canvas, fx int, fy int) (flo
 func (c *DeprecatedCamera) Render(canvas canvas.Canvas, scene []core.Entity, lights []core.Entity) {
 
 	pixels := canvas.Pixels()
-	for pixels.Next() {
+	for pixels.More() {
 		x, y := pixels.Get()
 
 		vx, vy := c.Viewport.FrameXYToViewportXY(canvas, x, y)

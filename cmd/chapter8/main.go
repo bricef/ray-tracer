@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	width, height := 1000, 500
+	width, height := 100, 50
 
 	// set up frame
 	frame := canvas.NewImageCanvas(width, height)
