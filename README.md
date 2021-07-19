@@ -26,9 +26,21 @@ Brice's attempt at the ray tracer challenge in Go
 
 ![Transformation matrix example](output/chapter4.png)
 
+## Notes
+
+You can use [the Open Asset Importer (assimp)](https://github.com/assimp/assimp) to convert `.stl` files to `.obj` files.
+
+It's available on Mac via [homebrew](https://brew.sh/). (`brew install assimp`)
+
+```bash
+$ assimp export Model.stl Model.obj
+```
+
 ## TODO
 
 - [ ] Named entities and scene search
 - [ ] Parallelise rendering across mutliple threads
 - [ ] Profile and optimise rendering function
 - [ ] Progress indicator on render
+- [ ] Orbit movement function
+- [ ] Refactor Lights to be entities (so that they have a transform, potision, etc...)

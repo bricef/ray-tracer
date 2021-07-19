@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/bricef/ray-tracer/canvas"
-	"github.com/bricef/ray-tracer/color"
+	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/color"
 )
 
 func main() {

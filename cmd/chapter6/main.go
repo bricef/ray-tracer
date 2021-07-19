@@ -4,46 +4,44 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/bricef/ray-tracer/camera"
-	"github.com/bricef/ray-tracer/canvas"
-	"github.com/bricef/ray-tracer/color"
-	"github.com/bricef/ray-tracer/entity"
-	"github.com/bricef/ray-tracer/light"
-	"github.com/bricef/ray-tracer/material"
-
-	. "github.com/bricef/ray-tracer/raytracer"
-	"github.com/bricef/ray-tracer/utils"
+	"github.com/bricef/ray-tracer/pkg/camera"
+	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/color"
+	"github.com/bricef/ray-tracer/pkg/core"
+	"github.com/bricef/ray-tracer/pkg/entities"
+	"github.com/bricef/ray-tracer/pkg/lighting"
+	"github.com/bricef/ray-tracer/pkg/material"
+	"github.com/bricef/ray-tracer/pkg/math"
+	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
 func main() {
 	// Set our canvas up for rendering
-	frame := canvas.NewImageCanvas(1000, 1000)
+	frame := canvas.NewImageCanvas(100, 100)
 
 	camera := camera.NewDeprecatedCamera(
-		Point(0, 0, 25),
-		Vector(0, 0, -1),
+		math.NewPoint(0, 0, 25),
+		math.NewVector(0, 0, -1),
 		8.0,
 		camera.NewViewport(8, 8),
 	)
 
 	mat := material.NewMaterial()
-	mat.Color = color.New(1, 0.2, 1)
+	mat.SetColor(color.New(1, 0.2, 1))
 
-	sphere := entity.NewSphere()
-	sphere.SetTransform(
-		Transform().Scale(10, 10, 10),
-	)
-	sphere.SetMaterial(mat)
+	sphere := entities.NewSphere()
+	sphere.Scale(10, 10, 10)
+	sphere.AddComponent(mat)
 
-	scene := []*entity.Entity{
+	scene := []core.Entity{
 		sphere,
 	}
 
-	lights := []*light.PointLight{
-		light.NewPointLight(
-			color.New(1, 1, 1),
-			Point(-25, -25, 25),
-		),
+	light := lighting.NewPointLight(color.New(1, 1, 1))
+	light.Translate(-25, -25, 25)
+
+	lights := []core.Entity{
+		light,
 	}
 
 	camera.Render(frame, scene, lights)

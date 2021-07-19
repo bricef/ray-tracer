@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/bricef/ray-tracer/camera"
-	"github.com/bricef/ray-tracer/canvas"
-	"github.com/bricef/ray-tracer/color"
-	"github.com/bricef/ray-tracer/entity"
-	"github.com/bricef/ray-tracer/light"
-	"github.com/bricef/ray-tracer/material"
-
-	. "github.com/bricef/ray-tracer/raytracer"
-	"github.com/bricef/ray-tracer/utils"
+	"github.com/bricef/ray-tracer/pkg/camera"
+	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/color"
+	"github.com/bricef/ray-tracer/pkg/core"
+	"github.com/bricef/ray-tracer/pkg/entities"
+	"github.com/bricef/ray-tracer/pkg/lighting"
+	"github.com/bricef/ray-tracer/pkg/material"
+	"github.com/bricef/ray-tracer/pkg/math"
+	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
 func main() {
@@ -20,24 +20,27 @@ func main() {
 	frame := canvas.NewImageCanvas(100, 100)
 
 	camera := camera.NewDeprecatedCamera(
-		Point(0, 0, 25),
-		Vector(0, 0, -1),
+		math.NewPoint(0, 0, 25),
+		math.NewVector(0, 0, -1),
 		8.0,
 		camera.NewViewport(8, 8),
 	)
 
 	mat := material.NewMaterial()
-	mat.Ambient = 1.0
-	mat.Specular = 0.0
-	mat.Diffuse = 0.0
+	mat.SetAmbient(1.0)
+	mat.SetSpecular(0.0)
+	mat.SetDiffuse(0.0)
 
-	sphere := entity.NewSphere()
-	sphere.SetTransform(Transform().Scale(6, 6, 6).Shear(0.5, 0, 0, 0, 0, 0))
-	sphere.SetMaterial(mat)
-	scene := []*entity.Entity{sphere}
+	sphere := entities.NewSphere()
+	sphere.Scale(6, 6, 6).Shear(0.5, 0, 0, 0, 0, 0)
+	sphere.AddComponent(mat)
+	scene := []core.Entity{sphere}
 
-	lights := []*light.PointLight{
-		light.NewPointLight(color.New(1, 1, 1), Point(0, 0, 25)),
+	light := lighting.NewPointLight(color.New(1, 1, 1))
+	light.Translate(0, 0, 25)
+
+	lights := []core.Entity{
+		light,
 	}
 
 	camera.Render(frame, scene, lights)

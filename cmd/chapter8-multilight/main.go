@@ -16,8 +16,19 @@ import (
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
+func saveFrame(frame *canvas.ImageCanvas, c *camera.Camera, s *scene.Scene, filepath string) {
+	c.Render(s, frame)
+	frame.WritePNG(filepath)
+	fmt.Printf("Wrote output to %v\n", filepath)
+}
+
 func main() {
-	width, height := 1000, 500
+	width, height := 50, 25
+	MAX_TICKS := 100
+
+	// Set up output dir
+	OUTPUT_DIR := "output/chapter8/multilight"
+	utils.EnsureDir(OUTPUT_DIR)
 
 	// set up frame
 	frame := canvas.NewImageCanvas(width, height)
@@ -25,9 +36,9 @@ func main() {
 	// set up scene
 	s := scene.NewScene()
 
-	wallMaterial := material.NewMaterial()
-	wallMaterial.SetColor(color.New(1, 0.9, 0.9))
-	wallMaterial.SetSpecular(0.0)
+	wallMaterial := material.NewMaterial().
+		SetColor(color.New(1, 0.9, 0.9)).
+		SetSpecular(0.0)
 
 	s.Add( // floor
 		entities.NewSphere().
@@ -79,13 +90,9 @@ func main() {
 			Scale(0.33, 0.33, 0.33),
 	)
 
-	// fmt.Printf("len(s.Entities)=%v\n", len(s.Entities))
-
 	s.Add( // light
-		lighting.NewPointLight(color.White).
-			Translate(-10, 10, -10),
+		lighting.NewPointLight(color.White).Translate(-10, 10, -10),
 	)
-	// XXX: Not being saved as light in scene. Type of not matching
 
 	c := camera.
 		CameraFromFOV(width, height, m.Pi/3.0).
@@ -96,12 +103,12 @@ func main() {
 				math.NewVector(0, 1, 0)),
 		)
 
-	c.Render(s, frame)
+	for tick := 0; tick <= MAX_TICKS; tick += 1 {
+		s.Tick()
+		filepath := path.Join(OUTPUT_DIR, fmt.Sprintf("frame-%v.png", tick))
+		saveFrame(frame, c, s, filepath)
+	}
 
 	// Write out to file
-	OUTPUT_DIR := "output"
-	utils.EnsureDir(OUTPUT_DIR)
-	outputFilename := path.Join(OUTPUT_DIR, "chapter7.png")
-	frame.WritePNG(outputFilename)
-	fmt.Printf("Wrote output to %v", outputFilename)
+
 }

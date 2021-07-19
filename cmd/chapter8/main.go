@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"math"
+	m "math"
 	"path"
 
-	"github.com/bricef/ray-tracer/camera"
-	"github.com/bricef/ray-tracer/canvas"
-	"github.com/bricef/ray-tracer/color"
-	"github.com/bricef/ray-tracer/entity"
-	"github.com/bricef/ray-tracer/light"
-	"github.com/bricef/ray-tracer/material"
-	"github.com/bricef/ray-tracer/quaternion"
-	"github.com/bricef/ray-tracer/scene"
-	"github.com/bricef/ray-tracer/transform"
-	"github.com/bricef/ray-tracer/utils"
+	"github.com/bricef/ray-tracer/pkg/camera"
+	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/color"
+	"github.com/bricef/ray-tracer/pkg/entities"
+	"github.com/bricef/ray-tracer/pkg/lighting"
+	"github.com/bricef/ray-tracer/pkg/material"
+	"github.com/bricef/ray-tracer/pkg/math"
+	"github.com/bricef/ray-tracer/pkg/scene"
+	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
 func main() {
@@ -26,88 +25,71 @@ func main() {
 	// set up scene
 	s := scene.NewScene()
 
-	wallMaterial := material.NewMaterial().
-		SetColor(color.New(1, 0.9, 0.9)).
-		SetSpecular(0.0)
+	wallMaterial := material.NewMaterial()
+	wallMaterial.SetColor(color.New(1, 0.9, 0.9))
+	wallMaterial.SetSpecular(0.0)
 
 	s.Add( // floor
-		entity.NewSphere().
-			SetMaterial(wallMaterial).
-			SetTransform(
-				transform.NewTransform().Scale(10, 0.01, 10),
-			),
+		entities.NewSphere().
+			AddComponent(wallMaterial).
+			Scale(10, 0.01, 10),
 	)
 
 	s.Add( // left floor
-		entity.NewSphere().
-			SetMaterial(wallMaterial).
-			SetTransform(
-				transform.NewTransform().
-					Translate(0, 0, 5).
-					RotateY(-math.Pi/4.0).
-					RotateX(math.Pi/2.0).
-					Scale(10, 0.01, 10),
-			),
+		entities.NewSphere().
+			AddComponent(wallMaterial).
+			Translate(0, 0, 5).
+			RotateY(-m.Pi/4.0).
+			RotateX(m.Pi/2.0).
+			Scale(10, 0.01, 10),
 	)
 
 	s.Add( // right wall
-		entity.NewSphere().
-			SetMaterial(wallMaterial).
-			SetTransform(
-				transform.NewTransform().
-					Translate(0, 0, 5).
-					RotateY(math.Pi/4.0).
-					RotateX(math.Pi/2.0).
-					Scale(10, 0.01, 10),
-			),
+		entities.NewSphere().
+			AddComponent(wallMaterial).
+			Translate(0, 0, 5).
+			RotateY(m.Pi/4.0).
+			RotateX(m.Pi/2.0).
+			Scale(10, 0.01, 10),
 	)
 
 	s.Add( // middle
-		entity.NewSphere().
-			SetMaterial(
+		entities.NewSphere().
+			AddComponent(
 				material.NewMaterial().SetColor(color.New(0.1, 1.0, 0.5)).SetDiffuse(0.7).SetSpecular(0.3),
 			).
-			SetTransform(
-				transform.NewTransform().Translate(-0.5, 1, 0.5),
-			),
+			Translate(-0.5, 1, 0.5),
 	)
 
 	s.Add( // right
-		entity.NewSphere().
-			SetMaterial(
+		entities.NewSphere().
+			AddComponent(
 				material.NewMaterial().SetColor(color.New(0.1, 1.0, 0.5)).SetDiffuse(0.7).SetSpecular(0.3),
 			).
-			SetTransform(
-				transform.NewTransform().Translate(1.5, 0.5, -0.5).Scale(0.5, 0.5, 0.5),
-			),
+			Translate(1.5, 0.5, -0.5).
+			Scale(0.5, 0.5, 0.5),
 	)
 
 	s.Add( // left
-		entity.NewSphere().
-			SetMaterial(
+		entities.NewSphere().
+			AddComponent(
 				material.NewMaterial().SetColor(color.New(1, 0.8, 0.1)).SetDiffuse(0.7).SetSpecular(0.3),
 			).
-			SetTransform(
-				transform.NewTransform().Translate(-1.5, 0.33, -0.75).Scale(0.33, 0.33, 0.33),
-			),
+			Translate(-1.5, 0.33, -0.75).
+			Scale(0.33, 0.33, 0.33),
 	)
 
-	// fmt.Printf("len(s.Entities)=%v\n", len(s.Entities))
-
 	s.Add( // light
-		light.NewPointLight(
-			color.White,
-			quaternion.NewPoint(-10, 10, -10),
-		),
+		lighting.NewPointLight(color.White).Translate(-10, 10, -10),
 	)
 
 	c := camera.
-		CameraFromFOV(width, height, math.Pi/3.0).
+		CameraFromFOV(width, height, m.Pi/3.0).
 		SetTransform(
-			transform.ViewTransform(
-				quaternion.NewPoint(0, 1.5, -5.0),
-				quaternion.NewPoint(0, 1, 0),
-				quaternion.NewVector(0, 1, 0)),
+			math.ViewTransform(
+				math.NewPoint(0, 1.5, -5.0),
+				math.NewPoint(0, 1, 0),
+				math.NewVector(0, 1, 0)),
 		)
 
 	c.Render(s, frame)
