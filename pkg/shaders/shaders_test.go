@@ -79,3 +79,21 @@ func TestGradientShader(t *testing.T) {
 		}
 	}
 }
+
+func TestRingShader(t *testing.T) {
+	shader := Rings(color.White, color.Black)
+
+	tests := []ShaderTest{
+		{shader, math.NewPoint(0, 0, 0), color.White},
+		{shader, math.NewPoint(1, 0, 0), color.Black},
+		{shader, math.NewPoint(0, 0, 1), color.Black},
+		{shader, math.NewPoint(0.708, 0, 0.708), color.Black},
+	}
+
+	for _, test := range tests {
+		result := test.shader(test.point)
+		if !result.Equal(test.expected) {
+			t.Errorf("Shader %v failure at %v. Expected %v, got %v ", test.shader, test.point, test.expected, result)
+		}
+	}
+}

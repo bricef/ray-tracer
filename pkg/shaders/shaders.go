@@ -44,3 +44,13 @@ func LinearGradient(a, b color.Color) core.Shader {
 		return b.Sub(a).Scale(ratio).Add(a)
 	}
 }
+
+func Rings(a, b color.Color) core.Shader {
+	return func(p math.Point) color.Color {
+		distance := m.Sqrt(p.X()*p.X() + p.Z() + p.Z())
+		if m.Mod(m.Floor(distance), 2) == 0.0 {
+			return a
+		}
+		return b
+	}
+}
