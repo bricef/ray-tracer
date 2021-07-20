@@ -42,3 +42,27 @@ func TestColormultiply(t *testing.T) {
 		t.Errorf("Failed to multiply color %v and %v. Expected %v, got %v.", a, b, expected, result)
 	}
 }
+
+func TestalternativeConstructors(t *testing.T) {
+	type cases struct {
+		result   Color
+		expected Color
+	}
+
+	tests := []cases{
+		{Hex(0xff0000), New(1, 0, 0)},
+		{Hex(0x00ff00), New(0, 1, 0)},
+		{Hex(0x0000ff), New(0, 0, 1)},
+		{Hex(0xff0000), New(1, 0, 0)},
+		{Hex(0x5F9EA0), New(0.37, 0.62, 0.63)},
+		{Bytes(255, 0, 0), New(1, 0, 0)},
+		{Bytes(0, 255, 0), New(0, 1, 0)},
+		{Bytes(0, 0, 255), New(0, 0, 1)},
+		{Bytes(95, 158, 160), New(0.37, 0.62, 0.63)},
+	}
+	for _, c := range tests {
+		if !c.result.EqualToTolerance(c.expected, 0.005) {
+			t.Errorf("Hex color creation failed. Expected %v, got %v", c.expected, c.result)
+		}
+	}
+}

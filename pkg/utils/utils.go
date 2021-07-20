@@ -41,3 +41,7 @@ func TimeTrack(start time.Time, name string) {
 	elapsed := time.Since(start)
 	log.Printf("%s took %s", name, elapsed)
 }
+
+func EqualToTolerance(a float64, b float64, tolerance float64) bool {
+	return math.Abs(a-b) <= tolerance
+}
