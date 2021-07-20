@@ -3,13 +3,10 @@ package ray_test
 import (
 	"testing"
 
-	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/entities"
-	"github.com/bricef/ray-tracer/pkg/lighting"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
-	"github.com/bricef/ray-tracer/pkg/scene"
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
@@ -169,35 +166,6 @@ func TestIntersectionsHaveInsideTrue(t *testing.T) {
 	}
 	if !xs.Hit.Normal.Equal(math.NewVector(0, 0, -1)) {
 		t.Errorf("Normal vector not computed correctly when inside object")
-	}
-}
-
-func TestShadingAnIntersection(t *testing.T) {
-	r := ray.NewRay(math.NewPoint(0, 0, -5), math.NewVector(0, 0, 1))
-	s := scene.DefaultScene()
-	xs := s.Intersections(r)
-
-	c := xs.Hit.Shade(s.Lights()[0])
-	expected := color.New(0.38066, 0.47583, 0.2855)
-
-	if !c.Equal(expected) {
-		t.Errorf("Failed to shade hit. Expected %v, got %v", expected, c)
-	}
-}
-
-func TestShadingAnIntersectionInsideObject(t *testing.T) {
-	s := scene.DefaultScene()
-	l := lighting.NewPointLight(color.White).MoveTo(math.NewPoint(0, 0.25, 0))
-	r := ray.NewRay(
-		math.NewPoint(0, 0, 0),
-		math.NewVector(0, 0, 1),
-	)
-	xs := s.Intersections(r)
-	got := xs.Hit.Shade(l)
-	expected := color.New(0.90498, 0.90498, 0.90498)
-
-	if !got.Equal(expected) {
-		t.Errorf("Failed to shade hit %v inside object. Expected %v, got %v", xs.Hit, expected, got)
 	}
 }
 

@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
-	"github.com/bricef/ray-tracer/pkg/lighting"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
@@ -66,25 +64,25 @@ func (i *Intersection) String() string {
 	return fmt.Sprintf("Intersection(%v)", i.T)
 }
 
-func (i *Intersection) Shade(l core.Entity) color.Color {
-	if l == nil {
-		panic(fmt.Errorf("trying to shade with nil light"))
-	}
-	if i.Entity == nil {
-		panic(fmt.Errorf("trying to shade with nil entity"))
-	}
-	mat := i.Entity.GetMaterial()
+// func (i *Intersection) Shade(l core.Entity) color.Color {
+// 	if l == nil {
+// 		panic(fmt.Errorf("trying to shade with nil light"))
+// 	}
+// 	if i.Entity == nil {
+// 		panic(fmt.Errorf("trying to shade with nil entity"))
+// 	}
+// 	mat := i.Entity.GetMaterial()
 
-	return lighting.Phong(mat, l, i.Point, i.EyeVector, i.Normal)
-}
+// 	return lighting.Phong(mat, l, i.Point, i.EyeVector, i.Normal)
+// }
 
-func (i *Intersection) ShadeAll(ls []core.Entity) color.Color {
-	c := color.New(0, 0, 0)
-	for _, l := range ls {
-		c = c.Add(i.Shade(l))
-	}
-	return c
-}
+// func (i *Intersection) ShadeAll(ls []core.Entity) color.Color {
+// 	c := color.New(0, 0, 0)
+// 	for _, l := range ls {
+// 		c = c.Add(i.Shade(l))
+// 	}
+// 	return c
+// }
 
 func (is *Intersections) Merge(xs *Intersections) *Intersections {
 	// Short circuit the empty case.

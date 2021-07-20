@@ -66,15 +66,6 @@ func (s *Scene) Intersections(r ray.Ray) *ray.Intersections {
 	return xs
 }
 
-func (s *Scene) Shade(r ray.Ray) color.Color {
-	xs := s.Intersections(r)
-	if xs.Hit != nil {
-		// fmt.Printf("Hit\n")
-		return xs.Hit.ShadeAll(s.Lights())
-	}
-	return s.BackgroundColor
-}
-
 func (s *Scene) Obstructed(a math.Point, b math.Point) bool {
 	path := a.Sub(b).AsVector()
 	distance := path.Magnitude()

@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/bricef/ray-tracer/pkg/color"
+	"github.com/bricef/ray-tracer/pkg/entities"
+	"github.com/bricef/ray-tracer/pkg/lighting"
 	"github.com/bricef/ray-tracer/pkg/material"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
@@ -79,7 +81,7 @@ func TestSceneShadingOnRayMiss(t *testing.T) {
 		math.NewVector(0, 1, 0),
 	)
 
-	c := s.Shade(r)
+	c := s.Cast(r)
 
 	if !c.Equal(color.Black) {
 		t.Errorf("Failed to shade a ray that doesn't intersect")
@@ -93,10 +95,26 @@ func TestSceneShadingOnRayHit(t *testing.T) {
 		math.NewVector(0, 0, 1),
 	)
 
-	c := s.Shade(r)
+	c := s.Cast(r)
 	expected := color.New(0.38066, 0.47583, 0.2855)
 	if !c.Equal(expected) {
 		t.Errorf("Scene failed to shade. Expected %v, got %v", c, expected)
+	}
+}
+
+func TestShadingAnIntersectionInsideObject(t *testing.T) {
+	s := scene.NewScene()
+	s.Add(entities.NewSphere().Scale(0.5, 0.5, 0.5))
+	s.Add(lighting.NewPointLight(color.White).MoveTo(math.NewPoint(0, 0.25, 0)))
+	r := ray.NewRay(
+		math.NewPoint(0, 0, 0),
+		math.NewVector(0, 0, 1),
+	)
+	got := s.Cast(r)
+	expected := color.New(0.90498, 0.90498, 0.90498)
+
+	if !got.Equal(expected) {
+		t.Errorf("Failed to shade hit inside object. Expected %v, got %v", expected, got)
 	}
 }
 
@@ -112,7 +130,7 @@ func TestShadingOnRayHitFirst(t *testing.T) {
 		math.NewVector(0, 0, -1),
 	)
 
-	c := s.Shade(r)
+	c := s.Cast(r)
 	expected := s.Entities[1].GetMaterial().Color()
 
 	if !c.Equal(expected) {
