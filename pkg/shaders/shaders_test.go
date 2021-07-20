@@ -97,3 +97,51 @@ func TestRingShader(t *testing.T) {
 		}
 	}
 }
+
+func TestCubeShader(t *testing.T) {
+	shader := Cubes(Pigment(color.White), Pigment(color.Black))
+
+	tests := []ShaderTest{
+		// in x
+		{shader, math.NewPoint(0, 0, 0), color.White},
+		{shader, math.NewPoint(0.99, 0, 0), color.White},
+		{shader, math.NewPoint(1.01, 0, 0), color.Black},
+		// in y
+		{shader, math.NewPoint(0, 0, 0), color.White},
+		{shader, math.NewPoint(0, 0.99, 0), color.White},
+		{shader, math.NewPoint(0, 1.01, 0), color.Black},
+		// in z
+		{shader, math.NewPoint(0, 0, 0), color.White},
+		{shader, math.NewPoint(0, 0, 0.99), color.White},
+		{shader, math.NewPoint(0, 0, 1.01), color.Black},
+	}
+
+	for _, test := range tests {
+		result := test.shader(test.point)
+		if !result.Equal(test.expected) {
+			t.Errorf("Shader %v failure at %v. Expected %v, got %v ", test.shader, test.point, test.expected, result)
+		}
+	}
+}
+
+func TestBlendShader(t *testing.T) {
+	white := Pigment(color.White)
+	black := Pigment(color.Black)
+
+	tests := []ShaderTest{
+		{BlendBias(white, black, 0.0), math.NewPoint(1, 2, 3), color.White},
+		{BlendBias(white, black, 1.0), math.NewPoint(1, 2, 3), color.Black},
+		{BlendBias(white, black, 0.5), math.NewPoint(1, 2, 3), color.New(0.5, 0.5, 0.5)},
+		{BlendBias(white, black, 0.75), math.NewPoint(1, 2, 3), color.New(0.25, 0.25, 0.25)},
+		// Blend is a shortcut for BlendBias(a,b,0.5)
+		{Blend(white, black), math.NewPoint(1, 2, 3), color.New(0.5, 0.5, 0.5)},
+	}
+
+	for _, test := range tests {
+		result := test.shader(test.point)
+		if !result.Equal(test.expected) {
+			t.Errorf("Shader %v failure at %v. Expected %v, got %v ", test.shader, test.point, test.expected, result)
+		}
+	}
+
+}

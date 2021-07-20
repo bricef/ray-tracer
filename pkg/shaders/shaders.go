@@ -2,10 +2,12 @@ package shaders
 
 import (
 	m "math"
+	"math/rand"
 
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/math"
+	opensimplex "github.com/ojrac/opensimplex-go"
 )
 
 func With(t math.Transform, s core.Shader) core.Shader {
@@ -52,5 +54,43 @@ func Rings(a, b core.Shader) core.Shader {
 			return a(p)
 		}
 		return b(p)
+	}
+}
+func Cubes(a, b core.Shader) core.Shader {
+	return func(p math.Point) color.Color {
+		sumfloors := m.Floor(p.X()) + m.Floor(p.Y()) + m.Floor(p.Z())
+		if m.Mod(sumfloors, 2) == 0.0 {
+			return a(p)
+		}
+		return b(p)
+	}
+}
+
+func BlendBias(a, b core.Shader, bias float64) core.Shader {
+	if bias <= 0.0 {
+		return a
+	}
+	if bias >= 1.0 {
+		return b
+	}
+	return func(p math.Point) color.Color {
+		return a(p).Scale(1 - bias).Add(b(p).Scale(bias))
+	}
+}
+
+func Blend(a, b core.Shader) core.Shader {
+	return BlendBias(a, b, 0.5)
+}
+
+func OpenSimplex() core.Shader {
+	r := opensimplex.NewNormalized(rand.Int63())
+	g := opensimplex.NewNormalized(rand.Int63())
+	b := opensimplex.NewNormalized(rand.Int63())
+	return func(p math.Point) color.Color {
+		return color.New(
+			r.Eval3(p.X(), p.Y(), p.Z()),
+			g.Eval3(p.X(), p.Y(), p.Z()),
+			b.Eval3(p.X(), p.Y(), p.Z()),
+		)
 	}
 }
