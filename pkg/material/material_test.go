@@ -21,7 +21,7 @@ func TestDefaultMaterial(t *testing.T) {
 }
 
 func TestMaterialLigthingWithTexture(t *testing.T) {
-	shader := shaders.Striped(
+	shader := shaders.Stripes(
 		shaders.Pigment(color.White),
 		shaders.Pigment(color.Black),
 	)

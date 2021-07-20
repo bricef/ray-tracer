@@ -30,7 +30,7 @@ func TestPigmentShader(t *testing.T) {
 }
 
 func TestStriped(t *testing.T) {
-	shader := Striped(
+	shader := Stripes(
 		Pigment(color.White),
 		Pigment(color.Black),
 	)

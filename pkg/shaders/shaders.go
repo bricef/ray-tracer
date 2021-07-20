@@ -7,6 +7,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/math"
+	"github.com/bricef/ray-tracer/pkg/utils"
 	opensimplex "github.com/ojrac/opensimplex-go"
 )
 
@@ -22,10 +23,10 @@ func Pigment(c color.Color) core.Shader {
 	}
 }
 
-func Striped(a core.Shader, b core.Shader) core.Shader {
+func Stripes(a core.Shader, b core.Shader) core.Shader {
 	return func(p math.Point) color.Color {
 		var c color.Color
-		if m.Mod(m.Floor(p.X()), 2) == 0 {
+		if utils.AlmostEqual(m.Mod(m.Floor(p.X()), 2), 0) {
 			c = a(p)
 		} else {
 			c = b(p)
@@ -50,7 +51,7 @@ func LinearGradient(a, b color.Color) core.Shader {
 func Rings(a, b core.Shader) core.Shader {
 	return func(p math.Point) color.Color {
 		distance := m.Sqrt(p.X()*p.X() + p.Z() + p.Z())
-		if m.Mod(m.Floor(distance), 2) == 0.0 {
+		if utils.AlmostEqual(m.Mod(m.Floor(distance), 2), 0.0) {
 			return a(p)
 		}
 		return b(p)
@@ -59,7 +60,7 @@ func Rings(a, b core.Shader) core.Shader {
 func Cubes(a, b core.Shader) core.Shader {
 	return func(p math.Point) color.Color {
 		sumfloors := m.Floor(p.X()) + m.Floor(p.Y()) + m.Floor(p.Z())
-		if m.Mod(sumfloors, 2) == 0.0 {
+		if utils.AlmostEqual(m.Mod(sumfloors, 2), 0.0) {
 			return a(p)
 		}
 		return b(p)

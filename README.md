@@ -4,6 +4,10 @@ Brice's attempt at the ray tracer challenge in Go
 
 ## Chapters
 
+### Chapter 10 – Shaders
+
+![Scene with shaders applied](output/chapter10.png)
+
 ### Chapter 9 – Planes
 
 ![Lit sphere on a plane](output/chapter9.png)
@@ -45,6 +49,7 @@ $ assimp export Model.stl Model.obj
 - [ ] Named entities and scene search
 - [ ] Parallelise rendering across mutliple threads
 - [ ] Profile and optimise rendering function
-- [ ] Progress indicator on render
 - [ ] Orbit movement function
-- [ ] Refactor Lights to be entities (so that they have a transform, potision, etc...)
+- [ ] UV Mapping for textures
+- [x] Progress indicator on render
+- [x] Refactor Lights to be entities (so that they have a transform, potision, etc...)
