@@ -81,7 +81,7 @@ func TestGradientShader(t *testing.T) {
 }
 
 func TestRingShader(t *testing.T) {
-	shader := Rings(color.White, color.Black)
+	shader := Rings(Pigment(color.White), Pigment(color.Black))
 
 	tests := []ShaderTest{
 		{shader, math.NewPoint(0, 0, 0), color.White},

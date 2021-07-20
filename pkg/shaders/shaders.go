@@ -45,12 +45,12 @@ func LinearGradient(a, b color.Color) core.Shader {
 	}
 }
 
-func Rings(a, b color.Color) core.Shader {
+func Rings(a, b core.Shader) core.Shader {
 	return func(p math.Point) color.Color {
 		distance := m.Sqrt(p.X()*p.X() + p.Z() + p.Z())
 		if m.Mod(m.Floor(distance), 2) == 0.0 {
-			return a
+			return a(p)
 		}
-		return b
+		return b(p)
 	}
 }
