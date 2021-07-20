@@ -37,3 +37,10 @@ func Test() core.Shader {
 		return color.New(p.X(), p.Y(), p.Z())
 	}
 }
+
+func LinearGradient(a, b color.Color) core.Shader {
+	return func(p math.Point) color.Color {
+		ratio := p.X() - m.Floor(p.X())
+		return b.Sub(a).Scale(ratio).Add(a)
+	}
+}
