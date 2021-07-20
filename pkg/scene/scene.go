@@ -85,10 +85,10 @@ func (s *Scene) Cast(r ray.Ray) color.Color {
 		mat := xs.Hit.Entity.GetMaterial()
 		for _, l := range s.lights {
 			if s.Obstructed(xs.Hit.OverPoint, l.Position()) {
-				contribution := lighting.PhongShadow(mat, l, xs.Hit.Point, xs.Hit.EyeVector, xs.Hit.Normal)
+				contribution := lighting.PhongShadow(mat, l, xs.Hit.OverPoint, xs.Hit.EyeVector, xs.Hit.Normal)
 				c = c.Add(contribution)
 			} else {
-				contribution := lighting.Phong(mat, l, xs.Hit.Point, xs.Hit.EyeVector, xs.Hit.Normal)
+				contribution := lighting.Phong(mat, l, xs.Hit.OverPoint, xs.Hit.EyeVector, xs.Hit.Normal)
 				c = c.Add(contribution)
 			}
 

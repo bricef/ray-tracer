@@ -60,7 +60,7 @@ func Rings(a, b core.Shader) core.Shader {
 func Cubes(a, b core.Shader) core.Shader {
 	return func(p math.Point) color.Color {
 		sumfloors := m.Floor(p.X()) + m.Floor(p.Y()) + m.Floor(p.Z())
-		if utils.AlmostEqual(m.Mod(sumfloors, 2), 0.0) {
+		if utils.AlmostEqual(m.Mod(sumfloors, 2.0), 0.0) {
 			return a(p)
 		}
 		return b(p)
