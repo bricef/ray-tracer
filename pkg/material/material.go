@@ -4,6 +4,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/component"
 	"github.com/bricef/ray-tracer/pkg/core"
+	"github.com/bricef/ray-tracer/pkg/math"
 )
 
 type Material struct {
@@ -12,6 +13,7 @@ type Material struct {
 	diffuse   float64
 	specular  float64
 	shininess float64
+	shader    core.Shader
 }
 
 func NewMaterial() *Material {
@@ -21,6 +23,7 @@ func NewMaterial() *Material {
 		diffuse:   0.9,
 		specular:  0.9,
 		shininess: 200.0,
+		shader:    nil,
 	}
 }
 
@@ -55,6 +58,23 @@ func (m *Material) SetShininess(v float64) core.Material {
 func (m *Material) SetColor(c color.Color) core.Material {
 	m.color = c
 	return m
+}
+
+func (m *Material) SetShader(s core.Shader) core.Material {
+	m.shader = s
+	return m
+}
+
+func (m *Material) ColorAt(p math.Point) color.Color {
+	if m.shader != nil {
+		return m.shader(p)
+	}
+	return m.color
+}
+
+func (m *Material) ColorOn(e core.Entity, worldPoint math.Point) color.Color {
+	objectPoint := e.Transform().Inverse().Apply(worldPoint).AsPoint()
+	return m.ColorAt(objectPoint)
 }
 
 func (m *Material) Color() color.Color {

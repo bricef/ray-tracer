@@ -141,3 +141,31 @@ func (t MatrixTransform) MoveTo(p Point) Transform {
 func (t MatrixTransform) Position() Point {
 	return NewPoint(t.Matrix.Values[0][3], t.Matrix.Values[1][3], t.Matrix.Values[2][3])
 }
+
+func Translate(x, y, z float64) Transform {
+	return NewTransform().Translate(x, y, z)
+}
+func Scale(x, y, z float64) Transform {
+	return NewTransform().Scale(x, y, z)
+}
+func Shear(xy, xz, yx, yz, zx, zy float64) Transform {
+	return NewTransform().Shear(xy, xz, yx, yz, zx, zy)
+}
+func RotateX(r float64) Transform {
+	return NewTransform().RotateX(r)
+}
+func RotateY(r float64) Transform {
+	return NewTransform().RotateY(r)
+}
+func RotateZ(r float64) Transform {
+	return NewTransform().RotateZ(r)
+}
+func ReflectX() Transform {
+	return NewTransform().ReflectX()
+}
+func ReflectY() Transform {
+	return NewTransform().ReflectY()
+}
+func ReflectZ() Transform {
+	return NewTransform().ReflectZ()
+}

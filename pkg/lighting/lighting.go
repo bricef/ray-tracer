@@ -18,7 +18,7 @@ func Phong(
 ) color.Color {
 	// surface color + light color
 	l := le.GetLight()
-	effectiveColor := mat.Color().Mult(l.Intensity())
+	effectiveColor := mat.ColorAt(point).Mult(l.Intensity())
 
 	// Direction to light
 	lightVector := le.Position().Sub(point).AsVector().Normalize()

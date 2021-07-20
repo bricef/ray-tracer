@@ -15,6 +15,8 @@ type Dynamic interface {
 	Tick(owner Entity)
 }
 
+type Shader func(p math.Point) color.Color
+
 type Material interface {
 	Component
 	Equal(o Material) bool
@@ -23,6 +25,9 @@ type Material interface {
 	SetSpecular(v float64) Material
 	SetShininess(v float64) Material
 	SetColor(c color.Color) Material
+	SetShader(s Shader) Material
+	ColorAt(math.Point) color.Color
+	ColorOn(Entity, math.Point) color.Color
 	Color() color.Color
 	Ambient() float64
 	Diffuse() float64
