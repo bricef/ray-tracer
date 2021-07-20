@@ -28,12 +28,19 @@ func main() {
 	floorMaterial := material.NewMaterial().
 		SetAmbient(0.1).
 		SetDiffuse(1.0).
-		SetShader(shaders.With(
-			math.Scale(1.5, 1.5, 1.5).RotateY(m.Pi/4),
-			shaders.Cubes(
-				shaders.Pigment(color.Black),
-				shaders.Pigment(color.White),
-			)))
+		SetShader(
+			shaders.With(
+				math.Scale(1.5, 1.5, 1.5), //.RotateY(m.Pi/4),
+				shaders.Perturbed(
+					0.2,
+					10,
+					shaders.Cubes(
+						shaders.Pigment(color.Black),
+						shaders.Pigment(color.White),
+					),
+				),
+			),
+		)
 
 	s.Add(
 		entities.NewPlane().
@@ -58,7 +65,7 @@ func main() {
 		SetDiffuse(1.0).
 		SetShader(
 			shaders.With(
-				math.RotateZ(m.Pi/4).Scale(0.3, 0.3, 0.3),
+				math.RotateZ(m.Pi/4).Scale(1, 1, 1),
 				shaders.Blend(
 					shaders.Stripes(
 						shaders.Pigment(color.White),

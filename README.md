@@ -51,5 +51,6 @@ $ assimp export Model.stl Model.obj
 - [ ] Profile and optimise rendering function
 - [ ] Orbit movement function
 - [ ] UV Mapping for textures
+- [ ] Optimise shaders with raw values types
 - [x] Progress indicator on render
 - [x] Refactor Lights to be entities (so that they have a transform, potision, etc...)

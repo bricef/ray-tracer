@@ -95,3 +95,16 @@ func OpenSimplex() core.Shader {
 		)
 	}
 }
+
+func Perturbed(factor float64, scale float64, s core.Shader) core.Shader {
+	x := opensimplex.NewNormalized(rand.Int63())
+	y := opensimplex.NewNormalized(rand.Int63())
+	z := opensimplex.NewNormalized(rand.Int63())
+	return func(p math.Point) color.Color {
+		px, py, pz := p.X()*scale, p.Y()*scale, p.Z()*scale
+		xv := x.Eval3(px, py, pz) * factor
+		yv := y.Eval3(px, py, pz) * factor
+		zv := z.Eval3(px, py, pz) * factor
+		return s(p.Add(math.NewPoint(xv, yv, zv)))
+	}
+}
