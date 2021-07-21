@@ -4,7 +4,7 @@ Brice's attempt at the ray tracer challenge in Go
 
 ## Chapters
 
-### Chapter 11 – Reflection adn Refeaction
+### Chapter 11 – Reflection and Refraction
 
 ![Scene with a reflective surface](output/chapter11-reflection.png)
 
