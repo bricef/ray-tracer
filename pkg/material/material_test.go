@@ -86,3 +86,14 @@ func TestShaderWithShaderAndObjectTransform(t *testing.T) {
 		t.Errorf("Failed to render texture on object")
 	}
 }
+
+func TestMaterialCanBeReflective(t *testing.T) {
+	material := material.NewMaterial()
+
+	got := material.Reflective()
+	expected := 0.0
+
+	if got != expected {
+		t.Errorf("Default material reflective. Expected %v, got %v", expected, got)
+	}
+}

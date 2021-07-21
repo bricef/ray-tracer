@@ -68,7 +68,7 @@ func (e *EntityNode) Position() math.Point {
 // Composition
 
 func (e *EntityNode) Components() []core.Component {
-	vs := make([]core.Component, len(e.components))
+	vs := make([]core.Component, 0)
 	for _, v := range e.components {
 		vs = append(vs, v)
 	}

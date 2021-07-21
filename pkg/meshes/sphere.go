@@ -40,3 +40,7 @@ func (s *sphere) Intersect(r core.Ray) []float64 {
 	}
 
 }
+
+func (s *sphere) String() string {
+	return "SphereMesh()"
+}

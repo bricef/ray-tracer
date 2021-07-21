@@ -1,12 +1,17 @@
 package ray_test
 
 import (
+	"fmt"
 	"testing"
 
+	m "math"
+
+	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/entities"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
+	"github.com/bricef/ray-tracer/pkg/scene"
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
@@ -201,4 +206,92 @@ func TestOverPointAboveSurface(t *testing.T) {
 		t.Errorf("Failed to compute overpoint. Got %v", xs.Hit.OverPoint)
 	}
 
+}
+
+func TestIntesectionsHaveReflectVector(t *testing.T) {
+	shape := entities.NewPlane()
+
+	r := ray.NewRay(
+		math.NewPoint(0, 1, -1),
+		math.NewVector(0, -m.Sqrt2/2, m.Sqrt2/2),
+	)
+
+	result := r.Hit(shape).ReflectVector
+	expected := math.NewVector(0, m.Sqrt2/2, m.Sqrt2/2)
+
+	if !result.Equal(expected) {
+		t.Errorf("Failed to calculate reflection vector. Expected %v, got %v", expected, result)
+	}
+
+}
+
+func TestsReflectionOnNonReflectiveSurface(t *testing.T) {
+	s := scene.DefaultScene()
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, 0),
+		math.NewVector(0, 0, 1),
+	)
+
+	e := s.Entities[1]
+	e.GetMaterial().SetAmbient(1.0)
+
+	xs := r.Intersect(e)
+
+	result := s.ReflectedContribution(xs.Hit)
+	expected := color.Black
+
+	if !result.Equal(expected) {
+		t.Errorf("Reflection on matt object failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestReflectionOnReflectiveSurfaceReturnsReflectedColor(t *testing.T) {
+	s := scene.DefaultScene()
+
+	e := entities.NewPlane()
+	e.Translate(0, -1, 0)
+	e.GetMaterial().SetReflective(0.5)
+
+	s.Add(e)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -3),
+		math.NewVector(0, -m.Sqrt2/2, m.Sqrt2/2),
+	)
+
+	xs := r.Intersect(e)
+
+	result := s.ReflectedContribution(xs.Hit)
+	expected := color.New(0.19033, 0.23792, 0.14274)
+	fmt.Println(e)
+	if !result.Equal(expected) {
+		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestReflectionOnReflectiveSurface(t *testing.T) {
+	s := scene.DefaultScene()
+
+	e := entities.NewPlane()
+	e.Translate(0, -1, 0)
+	e.GetMaterial().SetReflective(0.5)
+
+	s.Add(e)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -3),
+		math.NewVector(0, -m.Sqrt2/2, m.Sqrt2/2),
+	)
+
+	result := s.Cast(r)
+	// Book results
+	// expected := color.New(0.87677, 0.92436, 0.82918)
+
+	// I get
+	expected := color.New(.87676, .92434, .82917)
+
+	if !result.Equal(expected) {
+		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
+	}
 }

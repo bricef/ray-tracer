@@ -24,6 +24,7 @@ type Material interface {
 	SetDiffuse(v float64) Material
 	SetSpecular(v float64) Material
 	SetShininess(v float64) Material
+	SetReflective(v float64) Material
 	SetColor(c color.Color) Material
 	SetShader(s Shader) Material
 	ColorAt(math.Point) color.Color
@@ -33,6 +34,7 @@ type Material interface {
 	Diffuse() float64
 	Specular() float64
 	Shininess() float64
+	Reflective() float64
 }
 
 type Ray interface {
@@ -96,6 +98,6 @@ type Entity interface {
 	GetKinematic() Kinematic
 	GetLight() PointLight
 
-	// Good practices
+	// Utilities
 	String() string
 }

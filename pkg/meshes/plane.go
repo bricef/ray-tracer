@@ -33,3 +33,7 @@ func (plane *planeMesh) Intersect(r core.Ray) []float64 {
 	t := -r.Origin().Y() / r.Direction().Y()
 	return []float64{t}
 }
+
+func (plane *planeMesh) String() string {
+	return "PlaneMesh()"
+}

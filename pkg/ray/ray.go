@@ -2,7 +2,6 @@ package ray
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/math"
@@ -35,84 +34,6 @@ func (r Ray) String() string {
 		r.origin.X(), r.origin.Y(), r.origin.Z(),
 		r.direction.X(), r.direction.Y(), r.direction.Z(),
 	)
-}
-
-type Intersection struct {
-	T         float64
-	Entity    core.Entity
-	Point     math.Point
-	EyeVector math.Vector
-	Normal    math.Vector
-	Inside    bool
-	OverPoint math.Point
-}
-
-type Intersections struct {
-	All []*Intersection
-	Hit *Intersection
-}
-
-func NewIntersection() *Intersection {
-	return &Intersection{}
-}
-
-func NewIntersections() *Intersections {
-	return &Intersections{}
-}
-
-func (i *Intersection) String() string {
-	return fmt.Sprintf("Intersection(%v)", i.T)
-}
-
-// func (i *Intersection) Shade(l core.Entity) color.Color {
-// 	if l == nil {
-// 		panic(fmt.Errorf("trying to shade with nil light"))
-// 	}
-// 	if i.Entity == nil {
-// 		panic(fmt.Errorf("trying to shade with nil entity"))
-// 	}
-// 	mat := i.Entity.GetMaterial()
-
-// 	return lighting.Phong(mat, l, i.Point, i.EyeVector, i.Normal)
-// }
-
-// func (i *Intersection) ShadeAll(ls []core.Entity) color.Color {
-// 	c := color.New(0, 0, 0)
-// 	for _, l := range ls {
-// 		c = c.Add(i.Shade(l))
-// 	}
-// 	return c
-// }
-
-func (is *Intersections) Merge(xs *Intersections) *Intersections {
-	// Short circuit the empty case.
-	if (len(is.All) + len(xs.All)) == 0 {
-		return &Intersections{
-			All: []*Intersection{},
-			Hit: nil,
-		}
-	}
-
-	newAll := []*Intersection{}
-
-	newAll = append(newAll, is.All...)
-	newAll = append(newAll, xs.All...)
-
-	sort.Slice(newAll, func(i, j int) bool {
-		return newAll[i].T < newAll[j].T
-	})
-
-	var hit *Intersection
-	for i, x := range newAll {
-		if x.T > 0 && ((hit == nil) || x.T < hit.T) {
-			hit = newAll[i]
-		}
-	}
-
-	return &Intersections{
-		All: newAll,
-		Hit: hit,
-	}
 }
 
 func (r Ray) Hit(e core.Entity) *Intersection {
@@ -148,13 +69,14 @@ func (r Ray) Intersect(e core.Entity) *Intersections {
 			inside = true
 		}
 		x := &Intersection{
-			T:         t,
-			Entity:    e,
-			Point:     p,
-			EyeVector: eye,
-			Normal:    n,
-			Inside:    inside,
-			OverPoint: n.Scale(utils.Epsilon).Add(p),
+			T:             t,
+			Entity:        e,
+			Point:         p,
+			EyeVector:     eye,
+			Normal:        n,
+			Inside:        inside,
+			OverPoint:     n.Scale(utils.Epsilon).Add(p),
+			ReflectVector: r.direction.Reflect(n),
 		}
 		xs[i] = x
 		if t >= 0 && ((hit == nil) || t < hit.T) {
