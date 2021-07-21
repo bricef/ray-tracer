@@ -238,7 +238,7 @@ func TestsReflectionOnNonReflectiveSurface(t *testing.T) {
 
 	xs := r.Intersect(e)
 
-	result := s.ReflectedContribution(xs.Hit)
+	result := s.ReflectedContribution(xs.Hit, 10)
 	expected := color.Black
 
 	if !result.Equal(expected) {
@@ -262,35 +262,9 @@ func TestReflectionOnReflectiveSurfaceReturnsReflectedColor(t *testing.T) {
 
 	xs := r.Intersect(e)
 
-	result := s.ReflectedContribution(xs.Hit)
+	result := s.ReflectedContribution(xs.Hit, 10)
 	expected := color.New(0.19033, 0.23792, 0.14274)
 	fmt.Println(e)
-	if !result.Equal(expected) {
-		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
-	}
-}
-
-func TestReflectionOnReflectiveSurface(t *testing.T) {
-	s := scene.DefaultScene()
-
-	e := entities.NewPlane()
-	e.Translate(0, -1, 0)
-	e.GetMaterial().SetReflective(0.5)
-
-	s.Add(e)
-
-	r := ray.NewRay(
-		math.NewPoint(0, 0, -3),
-		math.NewVector(0, -m.Sqrt2/2, m.Sqrt2/2),
-	)
-
-	result := s.Cast(r)
-	// Book results
-	// expected := color.New(0.87677, 0.92436, 0.82918)
-
-	// I get
-	expected := color.New(.87676, .92434, .82917)
-
 	if !result.Equal(expected) {
 		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
 	}

@@ -3,6 +3,8 @@ package scene_test
 import (
 	"testing"
 
+	m "math"
+
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/entities"
 	"github.com/bricef/ray-tracer/pkg/lighting"
@@ -10,6 +12,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
 	"github.com/bricef/ray-tracer/pkg/scene"
+	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
 func TestSceneCreation(t *testing.T) {
@@ -136,4 +139,54 @@ func TestShadingOnRayHitFirst(t *testing.T) {
 	if !c.Equal(expected) {
 		t.Errorf("Scene failed to shade. Expected %v, got %v", c, expected)
 	}
+}
+
+func TestReflectionOnReflectiveSurface(t *testing.T) {
+	s := scene.DefaultScene()
+
+	e := entities.NewPlane()
+	e.Translate(0, -1, 0)
+	e.GetMaterial().SetReflective(0.5)
+
+	s.Add(e)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -3),
+		math.NewVector(0, -m.Sqrt2/2, m.Sqrt2/2),
+	)
+
+	result := s.Cast(r)
+
+	// Book results - close enough that I'll attribute this to rounding issues
+	// expected := color.New(0.87677, 0.92436, 0.82918)
+
+	expected := color.New(.87676, .92434, .82917)
+
+	if !result.Equal(expected) {
+		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestHandleInfiniteReflection(t *testing.T) {
+	s := scene.NewScene()
+
+	s.Add(lighting.NewPointLight(color.White))
+
+	lower := entities.NewPlane().Translate(0, -1, 0)
+	lower.GetMaterial().SetReflective(1.0)
+	s.Add(lower)
+
+	upper := entities.NewPlane().Translate(0, 1, 0)
+	upper.GetMaterial().SetReflective(1.0)
+	s.Add(upper)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, 0),
+		math.NewVector(0, 1, 0),
+	)
+
+	utils.FunctionTerminatesIn(t, 5, func() interface{} {
+		return s.Cast(r)
+	})
+
 }

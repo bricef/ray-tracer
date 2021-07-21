@@ -79,21 +79,28 @@ func (s *Scene) Obstructed(a math.Point, b math.Point) bool {
 }
 
 func (s *Scene) Cast(r ray.Ray) color.Color {
+	return s.LimitedCast(r, 5)
+}
+
+func (s *Scene) LimitedCast(r ray.Ray, depth int) color.Color {
+	if depth <= 0 { //Abort recursion after depth reached.
+		return color.Black
+	}
+
 	c := color.New(0, 0, 0)
 	xs := s.Intersections(r)
 	if xs.Hit != nil {
 
 		// Get lighting contributions
-		c = c.Add(s.LightingContribution(xs.Hit))
+		c = c.Add(s.LightingContribution(xs.Hit, depth))
 
 		// Get reflected contributions
-		c = c.Add(s.ReflectedContribution(xs.Hit))
+		c = c.Add(s.ReflectedContribution(xs.Hit, depth))
 
 		return c
 	}
 	return s.BackgroundColor
 }
-
 func (s *Scene) Tick() *Scene {
 	for _, e := range s.Entities {
 		e.Tick(s.Entities)
@@ -101,7 +108,7 @@ func (s *Scene) Tick() *Scene {
 	return s
 }
 
-func (s *Scene) LightingContribution(hit *ray.Intersection) color.Color {
+func (s *Scene) LightingContribution(hit *ray.Intersection, depth int) color.Color {
 	c := color.New(0, 0, 0)
 	for _, l := range s.lights {
 		c = c.Add(s.LightContribution(l, hit))
@@ -118,7 +125,7 @@ func (s *Scene) LightContribution(l core.Entity, hit *ray.Intersection) color.Co
 	}
 }
 
-func (s *Scene) ReflectedContribution(i *ray.Intersection) color.Color {
+func (s *Scene) ReflectedContribution(i *ray.Intersection, depth int) color.Color {
 	mat := i.Entity.GetMaterial()
 	if mat == nil { // No material
 		return color.Black
@@ -127,10 +134,11 @@ func (s *Scene) ReflectedContribution(i *ray.Intersection) color.Color {
 	if mat.Reflective() == 0.0 { // Not reflective
 		return color.Black
 	}
+
 	r := ray.NewRay(
 		i.OverPoint,
 		i.ReflectVector,
 	)
-	return s.Cast(r).Scale(mat.Reflective())
+	return s.LimitedCast(r, depth-1).Scale(mat.Reflective())
 
 }

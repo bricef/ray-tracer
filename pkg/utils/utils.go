@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"testing"
 	"time"
 )
 
@@ -44,4 +45,17 @@ func TimeTrack(start time.Time, name string) {
 
 func EqualToTolerance(a float64, b float64, tolerance float64) bool {
 	return math.Abs(a-b) <= tolerance
+}
+
+func FunctionTerminatesIn(t *testing.T, timeoutSeconds int, fn func() interface{}) {
+	c := make(chan interface{}, 1)
+	go func() {
+		c <- fn()
+	}()
+	select {
+	case res := <-c:
+		t.Logf("OK: Ray casting terminated. Got %v", res)
+	case <-time.After(5 * time.Second):
+		t.Errorf("Ray casting timeout after 5 seconds")
+	}
 }
