@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	OUTPUT_DIR := "output"
+
 	width, height := 1000, 500
 
 	// set up scene
@@ -106,6 +106,5 @@ func main() {
 				math.NewVector(0, 1, 0)),
 		)
 
-	outputFilename := path.Join(OUTPUT_DIR, "chapter11-reflection.png")
-	c.SaveFrame(s, outputFilename)
+	c.SaveFrame(s, "output/chapter11-reflection.png")
 }

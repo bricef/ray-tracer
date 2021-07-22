@@ -84,6 +84,7 @@ func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 }
 
 func (c *Camera) SaveFrame(s *scene.Scene, filename string) {
+	utils.EnsureDir(filepath.Dir(filename))
 	// Set up frame to render to
 	frame := canvas.NewImageCanvas(c.FrameWidth, c.FrameHeight)
 

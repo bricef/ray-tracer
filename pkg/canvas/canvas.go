@@ -107,6 +107,7 @@ func (c *ImageCanvas) Image() image.Image {
 }
 
 func (c *ImageCanvas) WritePNG(filename string) {
+	utils.EnsureDir(filepath.Dir(filename))
 	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
