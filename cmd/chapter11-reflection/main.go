@@ -2,7 +2,6 @@ package main
 
 import (
 	m "math"
-	"path"
 
 	"github.com/bricef/ray-tracer/pkg/camera"
 	"github.com/bricef/ray-tracer/pkg/color"
