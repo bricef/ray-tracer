@@ -34,7 +34,7 @@ func NewMaterial() *Material {
 }
 
 func (m *Material) String() string {
-	return fmt.Sprintf("Material(reflective: %v)", m.reflective)
+	return fmt.Sprintf("Material(reflective: %v, refractive: %v)", m.reflective, m.refractiveIndex)
 }
 
 func (m *Material) Type() core.ComponentType {

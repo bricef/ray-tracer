@@ -55,15 +55,7 @@ func DefaultScene() *Scene {
 }
 
 func (s *Scene) Intersections(r ray.Ray) *ray.Intersections {
-	xs := ray.NewIntersections()
-	for _, e := range s.Entities {
-		mat := e.GetMaterial()
-		mesh := e.GetMesh()
-		if mat != nil && mesh != nil { // Ignore entities without mesh or material
-			xs = xs.Merge(r.Intersect(e))
-		}
-	}
-	return xs
+	return r.GetIntersections(s.Entities)
 }
 
 func (s *Scene) Obstructed(a math.Point, b math.Point) bool {

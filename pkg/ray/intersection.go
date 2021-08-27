@@ -21,5 +21,5 @@ type Intersection struct {
 }
 
 func (i *Intersection) String() string {
-	return fmt.Sprintf("Intersection(%v)", i.T)
+	return fmt.Sprintf("Intersection(%v\n%v)\n", i.T, i.Entity)
 }

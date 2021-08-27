@@ -264,7 +264,6 @@ func TestReflectionOnReflectiveSurfaceReturnsReflectedColor(t *testing.T) {
 
 	result := s.ReflectedContribution(xs.Hit, 10)
 	expected := color.New(0.19033, 0.23792, 0.14274)
-	fmt.Println(e)
 	if !result.Equal(expected) {
 		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
 	}
@@ -291,6 +290,8 @@ func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
 
 	xs := s.Intersections(r)
 
+	fmt.Printf("%v\n", xs.All)
+
 	type helper struct {
 		N1 float64
 		N2 float64
@@ -304,7 +305,7 @@ func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
 		{2.5, 1.5},
 		{1.5, 1.0},
 	}
-
+	fmt.Printf("%v", tests)
 	for i, x := range xs.All {
 		if !(x.N1 == tests[i].N1 && x.N2 == tests[i].N2) {
 			t.Errorf("Intersection does not have correct indices of refraction. Expected %v->%v, got %v->%v", tests[i].N1, tests[i].N2, x.N1, x.N2)

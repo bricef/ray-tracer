@@ -86,46 +86,49 @@ func (r Ray) Intersect(e core.Entity) *Intersections {
 		}
 	}
 
-	objects := []core.Entity{}
-	for _, x := range xs {
-		if x == hit {
-			if len(objects) > 0 {
-				e := objects[len(objects)-1]
-				if e.GetMaterial() != nil {
-					x.N1 = e.GetMaterial().RefractiveIndex()
-				} else {
-					x.N1 = 1.0
-				}
-			} else {
-				x.N1 = 1.0
-			}
-		}
-		if core.Contains(objects, x.Entity) {
-			objects = core.Remove(objects, x.Entity)
-		} else {
-			objects = append(objects, x.Entity)
-		}
-
-		if x == hit {
-			if len(objects) == 0 {
-				x.N2 = 1.0
-			} else {
-				o := objects[len(objects)-1]
-				if o.GetMaterial() != nil {
-					x.N2 = o.GetMaterial().RefractiveIndex()
-				} else {
-					x.N2 = 1.0
-				}
-
-			}
-			break
-		}
-	}
-
 	if hit != nil && hit.T < 0 {
 		panic(fmt.Errorf("Hit.T < 0: %v", hit))
 	}
 	return &Intersections{All: xs, Hit: hit}
+}
+
+func (r Ray) GetIntersections(es []core.Entity) *Intersections {
+	xs := NewIntersections()
+	for _, e := range es {
+		mat := e.GetMaterial()
+		mesh := e.GetMesh()
+		if mat != nil && mesh != nil { // Ignore entities without mesh or material
+			xs = xs.Merge(r.Intersect(e))
+		}
+	}
+
+	for i, x := range xs.All {
+		if i == 0 { // first item. assume 1.0 refraction incident
+			x.N1 = 1.0
+			material := x.Entity.GetMaterial()
+			x.N2 = material.RefractiveIndex()
+		} else if len(xs.All) > 1 && i == (len(xs.All)-1) { // last item
+			x.N1 = xs.All[i-i].Entity.GetMaterial().RefractiveIndex()
+			x.N2 = 1.0
+		} else {
+			if xs.All[i-1].Inside && x.Inside { // Both inside
+				x.N1 = x.Entity.GetMaterial().RefractiveIndex()
+				x.N2 = xs.All[i+1].Entity.GetMaterial().RefractiveIndex()
+			} else if xs.All[i-1].Inside && !x.Inside { // Coming out of previous entity
+				x.N1 = xs.All[i-1].Entity.GetMaterial().RefractiveIndex()
+				x.N2 = 1.0
+			} else if !xs.All[i-1].Inside && x.Inside { // ???
+				x.N1 = xs.All[i-1].Entity.GetMaterial().RefractiveIndex()
+				x.N2 = xs.All[i+1].Entity.GetMaterial().RefractiveIndex()
+			} else { // both outside
+				x.N1 = xs.All[i-1].Entity.GetMaterial().RefractiveIndex()
+				x.N2 = x.Entity.GetMaterial().RefractiveIndex()
+			}
+		}
+	}
+
+	return xs
+
 }
 
 func (r Ray) Transform(t math.Transform) core.Ray {
