@@ -269,3 +269,46 @@ func TestReflectionOnReflectiveSurfaceReturnsReflectedColor(t *testing.T) {
 		t.Errorf("Failed to compute reflected color. Expected %v, got %v", expected, result)
 	}
 }
+
+func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
+	s := scene.NewScene()
+
+	a := entities.NewGlassSphere().Scale(2, 2, 2)
+	s.Add(a)
+
+	b := entities.NewGlassSphere().Translate(0, 0, -0.25)
+	b.GetMaterial().SetRefractiveIndex(2.0)
+	s.Add(b)
+
+	c := entities.NewGlassSphere().Translate(0, 0, 0.25)
+	c.GetMaterial().SetRefractiveIndex(2.5)
+	s.Add(c)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -4),
+		math.NewVector(0, 0, 1),
+	)
+
+	xs := s.Intersections(r)
+
+	type helper struct {
+		N1 float64
+		N2 float64
+	}
+
+	tests := []helper{
+		{1.0, 1.5},
+		{1.5, 2.0},
+		{2.0, 2.5},
+		{2.5, 2.5},
+		{2.5, 1.5},
+		{1.5, 1.0},
+	}
+
+	for i, x := range xs.All {
+		if !(x.N1 == tests[i].N1 && x.N2 == tests[i].N2) {
+			t.Errorf("Intersection does not have correct indices of refraction. Expected %v->%v, got %v->%v", tests[i].N1, tests[i].N2, x.N1, x.N2)
+		}
+	}
+
+}

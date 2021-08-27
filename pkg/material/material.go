@@ -10,13 +10,15 @@ import (
 )
 
 type Material struct {
-	color      color.Color
-	ambient    float64
-	diffuse    float64
-	specular   float64
-	shininess  float64
-	shader     core.Shader
-	reflective float64
+	color           color.Color
+	ambient         float64
+	diffuse         float64
+	specular        float64
+	shininess       float64
+	shader          core.Shader
+	reflective      float64
+	transparency    float64
+	refractiveIndex float64
 }
 
 func NewMaterial() *Material {
@@ -78,6 +80,16 @@ func (m *Material) SetReflective(v float64) core.Material {
 	return m
 }
 
+func (m *Material) SetTransparency(v float64) core.Material {
+	m.transparency = v
+	return m
+}
+
+func (m *Material) SetRefractiveIndex(v float64) core.Material {
+	m.refractiveIndex = v
+	return m
+}
+
 func (m *Material) ColorAt(p math.Point) color.Color {
 	if m.shader != nil {
 		return m.shader(p)
@@ -107,4 +119,10 @@ func (m *Material) Shininess() float64 {
 }
 func (m *Material) Reflective() float64 {
 	return m.reflective
+}
+func (m *Material) Transparency() float64 {
+	return m.transparency
+}
+func (m *Material) RefractiveIndex() float64 {
+	return m.refractiveIndex
 }

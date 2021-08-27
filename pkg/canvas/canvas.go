@@ -3,12 +3,12 @@ package canvas
 import (
 	"fmt"
 	"image"
-	"path/filepath"
 	imageColor "image/color"
 	"image/png"
 	"log"
 	"math"
 	"os"
+	"path/filepath"
 
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/utils"

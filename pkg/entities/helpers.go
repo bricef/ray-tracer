@@ -18,3 +18,13 @@ func NewPlane() core.Entity {
 		AddComponent(meshes.PlaneMesh()).
 		AddComponent(material.NewMaterial())
 }
+
+func NewGlassSphere() core.Entity {
+	mat := material.NewMaterial().
+		SetTransparency(1.0).
+		SetRefractiveIndex(1.5)
+
+	return entity.NewEntity().
+		AddComponent(meshes.SphereMesh()).
+		AddComponent(mat)
+}

@@ -97,3 +97,11 @@ func TestMaterialCanBeReflective(t *testing.T) {
 		t.Errorf("Default material reflective. Expected %v, got %v", expected, got)
 	}
 }
+
+func TestMaterialsHaveRefractiveProperties(t *testing.T) {
+	m := material.NewMaterial()
+
+	if !(m.Transparency() == 0.0) && (m.RefractiveIndex() == 1.0) {
+		t.Errorf("Default materials are not set up correctly for transparency")
+	}
+}

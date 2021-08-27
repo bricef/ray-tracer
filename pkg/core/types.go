@@ -25,6 +25,8 @@ type Material interface {
 	SetSpecular(v float64) Material
 	SetShininess(v float64) Material
 	SetReflective(v float64) Material
+	SetRefractiveIndex(v float64) Material
+	SetTransparency(v float64) Material
 	SetColor(c color.Color) Material
 	SetShader(s Shader) Material
 	ColorAt(math.Point) color.Color
@@ -35,6 +37,8 @@ type Material interface {
 	Specular() float64
 	Shininess() float64
 	Reflective() float64
+	Transparency() float64
+	RefractiveIndex() float64
 }
 
 type Ray interface {
@@ -100,4 +104,21 @@ type Entity interface {
 
 	// Utilities
 	String() string
+}
+
+func Contains(es []Entity, e Entity) bool {
+	for _, a := range es {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+func Remove(es []Entity, e Entity) []Entity {
+	for i, a := range es {
+		if a == e {
+			return append(es[:i], es[i+1:]...)
+		}
+	}
+	return es
 }

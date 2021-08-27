@@ -77,12 +77,51 @@ func (r Ray) Intersect(e core.Entity) *Intersections {
 			Inside:        inside,
 			OverPoint:     n.Scale(utils.Epsilon).Add(p),
 			ReflectVector: r.direction.Reflect(n),
+			N1:            0.0,
+			N2:            0.0,
 		}
 		xs[i] = x
 		if t >= 0 && ((hit == nil) || t < hit.T) {
 			hit = x
 		}
 	}
+
+	objects := []core.Entity{}
+	for _, x := range xs {
+		if x == hit {
+			if len(objects) > 0 {
+				e := objects[len(objects)-1]
+				if e.GetMaterial() != nil {
+					x.N1 = e.GetMaterial().RefractiveIndex()
+				} else {
+					x.N1 = 1.0
+				}
+			} else {
+				x.N1 = 1.0
+			}
+		}
+		if core.Contains(objects, x.Entity) {
+			objects = core.Remove(objects, x.Entity)
+		} else {
+			objects = append(objects, x.Entity)
+		}
+
+		if x == hit {
+			if len(objects) == 0 {
+				x.N2 = 1.0
+			} else {
+				o := objects[len(objects)-1]
+				if o.GetMaterial() != nil {
+					x.N2 = o.GetMaterial().RefractiveIndex()
+				} else {
+					x.N2 = 1.0
+				}
+
+			}
+			break
+		}
+	}
+
 	if hit != nil && hit.T < 0 {
 		panic(fmt.Errorf("Hit.T < 0: %v", hit))
 	}

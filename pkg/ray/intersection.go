@@ -16,6 +16,8 @@ type Intersection struct {
 	Inside        bool
 	OverPoint     math.Point
 	ReflectVector math.Vector
+	N1            float64
+	N2            float64
 }
 
 func (i *Intersection) String() string {
