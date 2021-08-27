@@ -67,7 +67,7 @@ func PhongShadow(
 	if m == nil {
 		panic(fmt.Errorf("nil material passed to PhongShadow()"))
 	}
-	effectiveColor := m.Color().Mult(l.Intensity())
+	effectiveColor := m.ColorAt(point).Mult(l.Intensity())
 	ambient := effectiveColor.Scale(m.Ambient())
 	return ambient
 }
