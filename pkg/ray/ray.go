@@ -129,6 +129,42 @@ func (r Ray) GetIntersections(es []core.Entity) *Intersections {
 		}
 	}
 
+	// objects := []core.Entity{}
+	// hit := xs.Hit
+	// for _, x := range xs.All {
+	// 	if x == hit {
+	// 		if len(objects) > 0 {
+	// 			e := objects[len(objects)-1]
+	// 			if e.GetMaterial() != nil {
+	// 				x.N1 = e.GetMaterial().RefractiveIndex()
+	// 			} else {
+	// 				x.N1 = 1.0
+	// 			}
+	// 		} else {
+	// 			x.N1 = 1.0
+	// 		}
+	// 	}
+
+	// 	if core.Contains(objects, x.Entity) {
+	// 		objects = core.Remove(objects, x.Entity)
+	// 	} else {
+	// 		objects = append(objects, x.Entity)
+	// 	}
+
+	// 	if x == hit {
+	// 		if len(objects) == 0 {
+	// 			x.N2 = 1.0
+	// 		} else {
+	// 			o := objects[len(objects)-1]
+	// 			if o.GetMaterial() != nil {
+	// 				x.N2 = o.GetMaterial().RefractiveIndex()
+	// 			} else {
+	// 				x.N2 = 1.0
+	// 			}
+	// 		}
+	// 		break
+	// 	}
+	// }
 	return xs
 
 }

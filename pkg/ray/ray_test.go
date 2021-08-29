@@ -290,7 +290,7 @@ func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
 
 	xs := s.Intersections(r)
 
-	fmt.Printf("%v\n", xs.All)
+	// fmt.Printf("%v\n", xs.All)
 
 	type helper struct {
 		N1 float64

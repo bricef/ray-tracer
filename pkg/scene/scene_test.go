@@ -12,6 +12,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
 	"github.com/bricef/ray-tracer/pkg/scene"
+	"github.com/bricef/ray-tracer/pkg/shaders"
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
@@ -245,28 +246,28 @@ func TestReferactionUnderTotalInternalReflection(t *testing.T) {
 	}
 }
 
-// func TestRefractedColor(t *testing.T) {
-// 	s := scene.DefaultScene()
+func TestRefractedColor(t *testing.T) {
+	s := scene.DefaultScene()
 
-// 	s.Entities[0].GetMaterial().SetAmbient(1.0)
-// 	s.Entities[0].GetMaterial().SetShader(shaders.Test())
+	s.Entities[0].GetMaterial().SetAmbient(1.0)
+	s.Entities[0].GetMaterial().SetShader(shaders.Test())
 
-// 	s.Entities[1].GetMaterial().SetTransparency(1.0)
-// 	s.Entities[1].GetMaterial().SetRefractiveIndex(1.5)
+	s.Entities[1].GetMaterial().SetTransparency(1.0)
+	s.Entities[1].GetMaterial().SetRefractiveIndex(1.5)
 
-// 	r := ray.NewRay(
-// 		math.NewPoint(0, 0, 0.1),
-// 		math.NewVector(0, 1, 0),
-// 	)
+	r := ray.NewRay(
+		math.NewPoint(0, 0, 0.1),
+		math.NewVector(0, 1, 0),
+	)
 
-// 	xs := r.GetIntersections(s.Entities)
-// 	fmt.Printf("%v\n", xs.All)
+	xs := r.GetIntersections(s.Entities)
+	// fmt.Printf("%v\n", xs.All)
 
-// 	result := s.RefractedContribution(xs.All[2], 5)
-// 	expected := color.New(0, 0.99888, 0.04725)
+	result := s.RefractedContribution(xs.All[2], 5)
+	expected := color.New(0, 0.99888, 0.04725)
 
-// 	if !result.Equal(expected) {
-// 		t.Errorf("Refracted color incorrect. Expected %v, got %v", expected, result)
-// 	}
+	if !result.Equal(expected) {
+		t.Errorf("Refracted color incorrect. Expected %v, got %v", expected, result)
+	}
 
-// }
+}

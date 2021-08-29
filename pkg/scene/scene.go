@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"fmt"
+	m "math"
 
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
@@ -154,13 +154,32 @@ func (s *Scene) RefractedContribution(i *ray.Intersection, depth int) color.Colo
 		return color.Black
 	}
 
-	n_ratio := i.N1 / i.N2
+	r := i.N1 / i.N2
 	cos_i := i.EyeVector.Dot(i.Normal)
-	sin2_t := n_ratio * n_ratio * (1 - (cos_i * cos_i))
+	sin2_t := r * r * (1 - (cos_i * cos_i))
 	if sin2_t > 1.0 {
-		fmt.Printf("Total Internal Relfection. ration = %v, Sin2_t = %v\n", n_ratio, sin2_t)
 		return color.Black
 	}
 
-	return color.White
+	// FROM BOOK
+	cos_t := m.Sqrt(1.0 - sin2_t)
+	direction := i.Normal.Scale((r * cos_i) - cos_t).Sub(i.EyeVector.Scale(r))
+
+	// FROM WIKIPEDIA https://en.wikipedia.org/wiki/Snell%27s_law
+	// c := i.Normal.Negate().AsVector().Dot(i.EyeVector)
+	// direction := i.EyeVector.Scale(r).Add(
+	// 	i.Normal.Scale(
+	// 		(r * c) - m.Sqrt(
+	// 			1-(r*r)-(r*r*c*c),
+	// 		),
+	// 	),
+	// )
+
+	refractionRay := ray.NewRay(
+		i.UnderPoint,
+		direction.AsVector(),
+	)
+	return s.LimitedCast(refractionRay, depth-1)
+
+	// return color.White?
 }
