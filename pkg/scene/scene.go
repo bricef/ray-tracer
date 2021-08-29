@@ -1,6 +1,8 @@
 package scene
 
 import (
+	"fmt"
+
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/entities"
@@ -133,4 +135,32 @@ func (s *Scene) ReflectedContribution(i *ray.Intersection, depth int) color.Colo
 	)
 	return s.LimitedCast(r, depth-1).Scale(mat.Reflective())
 
+}
+
+func (s *Scene) RefractedContribution(i *ray.Intersection, depth int) color.Color {
+	mat := i.Entity.GetMaterial()
+	// Max depth, no refraction
+	if depth <= 0 {
+		return color.Black
+	}
+
+	// No material, no refraction
+	if mat == nil {
+		return color.Black
+	}
+
+	// Material is opaque, no refraction
+	if mat.Transparency() == 0.0 {
+		return color.Black
+	}
+
+	n_ratio := i.N1 / i.N2
+	cos_i := i.EyeVector.Dot(i.Normal)
+	sin2_t := n_ratio * n_ratio * (1 - (cos_i * cos_i))
+	if sin2_t > 1.0 {
+		fmt.Printf("Total Internal Relfection. ration = %v, Sin2_t = %v\n", n_ratio, sin2_t)
+		return color.Black
+	}
+
+	return color.White
 }

@@ -15,6 +15,7 @@ type Intersection struct {
 	Normal        math.Vector
 	Inside        bool
 	OverPoint     math.Point
+	UnderPoint    math.Point
 	ReflectVector math.Vector
 	N1            float64
 	N2            float64

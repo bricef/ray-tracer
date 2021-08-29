@@ -225,7 +225,7 @@ func TestIntesectionsHaveReflectVector(t *testing.T) {
 
 }
 
-func TestsReflectionOnNonReflectiveSurface(t *testing.T) {
+func TestReflectionOnNonReflectiveSurface(t *testing.T) {
 	s := scene.DefaultScene()
 
 	r := ray.NewRay(
@@ -310,6 +310,20 @@ func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
 		if !(x.N1 == tests[i].N1 && x.N2 == tests[i].N2) {
 			t.Errorf("Intersection does not have correct indices of refraction. Expected %v->%v, got %v->%v", tests[i].N1, tests[i].N2, x.N1, x.N2)
 		}
+	}
+
+}
+
+func TestUnderPointBelowSurface(t *testing.T) {
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -5),
+		math.NewVector(0, 0, 1),
+	)
+	shape := entities.NewGlassSphere().Translate(0, 0, 1)
+	xs := r.Intersect(shape)
+
+	if !(xs.Hit.UnderPoint.Z() > utils.Epsilon/2) && (xs.Hit.Point.Z() < xs.Hit.UnderPoint.Z()) {
+		t.Errorf("Failed to compute underpoint. Got %v. Expected Z to be less than Z in %v", xs.Hit.UnderPoint, xs.Hit.Point)
 	}
 
 }

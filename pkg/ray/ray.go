@@ -69,13 +69,15 @@ func (r Ray) Intersect(e core.Entity) *Intersections {
 			inside = true
 		}
 		x := &Intersection{
-			T:             t,
-			Entity:        e,
-			Point:         p,
-			EyeVector:     eye,
-			Normal:        n,
-			Inside:        inside,
-			OverPoint:     n.Scale(utils.Epsilon).Add(p),
+			T:          t,
+			Entity:     e,
+			Point:      p,
+			OverPoint:  p.Add(n.Scale(utils.Epsilon)),
+			UnderPoint: p.Sub(n.Scale(utils.Epsilon)),
+			EyeVector:  eye,
+			Normal:     n,
+			Inside:     inside,
+
 			ReflectVector: r.direction.Reflect(n),
 			N1:            0.0,
 			N2:            0.0,

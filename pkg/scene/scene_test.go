@@ -190,3 +190,83 @@ func TestHandleInfiniteReflection(t *testing.T) {
 	})
 
 }
+
+func TestOpaqueObjectHasNoRefraction(t *testing.T) {
+	w := scene.DefaultScene()
+	r := ray.NewRay(
+		math.NewPoint(0, 0, -5),
+		math.NewVector(0, 0, 1),
+	)
+	xs := r.GetIntersections(w.Entities)
+	result := w.RefractedContribution(xs.Hit, 10)
+
+	expected := color.Black
+	if !result.Equal(expected) {
+		t.Errorf("Opaque object has referaction component. Expected %v, got %v.", expected, result)
+	}
+
+}
+
+func TestRefractionAtMaxDepthIsBlack(t *testing.T) {
+	w := scene.DefaultScene()
+	w.Entities[0].GetMaterial().SetTransparency(1.0)
+	w.Entities[0].GetMaterial().SetRefractiveIndex(1.5)
+
+	r := ray.NewRay(math.NewPoint(0, 0, -5), math.NewVector(0, 0, 1))
+
+	xs := r.GetIntersections(w.Entities)
+
+	result := w.RefractedContribution(xs.Hit, 0)
+	expected := color.Black
+
+	if !result.Equal(expected) {
+		t.Errorf("Referaction at max depth should be black. Expected %v, Got %v.", expected, result)
+	}
+}
+
+func TestReferactionUnderTotalInternalReflection(t *testing.T) {
+	s := scene.DefaultScene()
+	s.Entities[0].GetMaterial().SetTransparency(1.0)
+	s.Entities[0].GetMaterial().SetRefractiveIndex(1.5)
+
+	r := ray.NewRay(
+		math.NewPoint(0, 0, m.Sqrt2/2.0),
+		math.NewVector(0, 1, 0),
+	)
+
+	xs := r.GetIntersections(s.Entities)
+	i := xs.All[1]
+
+	result := s.RefractedContribution(i, 5)
+	expected := color.Black
+
+	if !result.Equal(expected) {
+		t.Errorf("Refractyion contribution under conditions of total internal reflection. Expected %v, got %v.", expected, result)
+	}
+}
+
+// func TestRefractedColor(t *testing.T) {
+// 	s := scene.DefaultScene()
+
+// 	s.Entities[0].GetMaterial().SetAmbient(1.0)
+// 	s.Entities[0].GetMaterial().SetShader(shaders.Test())
+
+// 	s.Entities[1].GetMaterial().SetTransparency(1.0)
+// 	s.Entities[1].GetMaterial().SetRefractiveIndex(1.5)
+
+// 	r := ray.NewRay(
+// 		math.NewPoint(0, 0, 0.1),
+// 		math.NewVector(0, 1, 0),
+// 	)
+
+// 	xs := r.GetIntersections(s.Entities)
+// 	fmt.Printf("%v\n", xs.All)
+
+// 	result := s.RefractedContribution(xs.All[2], 5)
+// 	expected := color.New(0, 0.99888, 0.04725)
+
+// 	if !result.Equal(expected) {
+// 		t.Errorf("Refracted color incorrect. Expected %v, got %v", expected, result)
+// 	}
+
+// }
