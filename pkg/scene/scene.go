@@ -86,10 +86,25 @@ func (s *Scene) LimitedCast(r ray.Ray, depth int) color.Color {
 	if xs.Hit != nil {
 
 		// Get lighting contributions
-		c = c.Add(s.LightingContribution(xs.Hit, depth))
+		surface := s.LightingContribution(xs.Hit, depth)
 
 		// Get reflected contributions
-		c = c.Add(s.ReflectedContribution(xs.Hit, depth))
+		reflected := s.ReflectedContribution(xs.Hit, depth)
+
+		// Get refracted contribution
+		refracted := s.RefractedContribution(xs.Hit, depth)
+
+		mat := xs.Hit.Entity.GetMaterial()
+		if (mat != nil) && (mat.Reflective() > 0.0) && (mat.Transparency() > 0.0) {
+			reflectance := xs.Hit.Schlick()
+			c = c.Add(surface).Add(
+				reflected.Scale(reflectance),
+			).Add(
+				refracted.Scale(1.0 - reflectance),
+			)
+		} else {
+			c = c.Add(surface).Add(reflected).Add(refracted)
+		}
 
 		return c
 	}
@@ -179,7 +194,7 @@ func (s *Scene) RefractedContribution(i *ray.Intersection, depth int) color.Colo
 		i.UnderPoint,
 		direction.AsVector(),
 	)
-	return s.LimitedCast(refractionRay, depth-1)
+	return s.LimitedCast(refractionRay, depth-1).Scale(mat.Transparency())
 
 	// return color.White?
 }

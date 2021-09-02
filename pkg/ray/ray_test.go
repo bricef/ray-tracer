@@ -1,7 +1,6 @@
 package ray_test
 
 import (
-	"fmt"
 	"testing"
 
 	m "math"
@@ -305,7 +304,7 @@ func TestRefractionIndicesArePresentOnIntersection(t *testing.T) {
 		{2.5, 1.5},
 		{1.5, 1.0},
 	}
-	fmt.Printf("%v", tests)
+	// fmt.Printf("%v", tests)
 	for i, x := range xs.All {
 		if !(x.N1 == tests[i].N1 && x.N2 == tests[i].N2) {
 			t.Errorf("Intersection does not have correct indices of refraction. Expected %v->%v, got %v->%v", tests[i].N1, tests[i].N2, x.N1, x.N2)

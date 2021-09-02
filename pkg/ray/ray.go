@@ -107,8 +107,7 @@ func (r Ray) GetIntersections(es []core.Entity) *Intersections {
 	for i, x := range xs.All {
 		if i == 0 { // first item. assume 1.0 refraction incident
 			x.N1 = 1.0
-			material := x.Entity.GetMaterial()
-			x.N2 = material.RefractiveIndex()
+			x.N2 = x.Entity.GetMaterial().RefractiveIndex()
 		} else if len(xs.All) > 1 && i == (len(xs.All)-1) { // last item
 			x.N1 = xs.All[i-i].Entity.GetMaterial().RefractiveIndex()
 			x.N2 = 1.0

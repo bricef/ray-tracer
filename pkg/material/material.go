@@ -23,13 +23,14 @@ type Material struct {
 
 func NewMaterial() *Material {
 	return &Material{
-		color:      color.New(1, 1, 1),
-		ambient:    0.1,
-		diffuse:    0.9,
-		specular:   0.9,
-		shininess:  200.0,
-		shader:     nil,
-		reflective: 0.0,
+		color:           color.New(1, 1, 1),
+		ambient:         0.1,
+		diffuse:         0.9,
+		specular:        0.9,
+		shininess:       200.0,
+		shader:          nil,
+		reflective:      0.0,
+		refractiveIndex: 1.0,
 	}
 }
 

@@ -6,7 +6,9 @@ Brice's attempt at the ray tracer challenge in Go
 
 ### Chapter 11 – Reflection and Refraction
 
+![Scene with a refractive surface](output/chapter11-refraction.png)
 ![Scene with a reflective surface](output/chapter11-reflection.png)
+
 
 ### Chapter 10 – Shaders
 
@@ -56,5 +58,6 @@ $ assimp export Model.stl Model.obj
 - [ ] Orbit movement function
 - [ ] UV Mapping for textures
 - [ ] Optimise shaders with raw values types
+- [ ] Transparency shadows
 - [x] Progress indicator on render
 - [x] Refactor Lights to be entities (so that they have a transform, potision, etc...)
