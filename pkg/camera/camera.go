@@ -4,9 +4,11 @@ import (
 	"fmt"
 	m "math"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/bricef/ray-tracer/pkg/canvas"
+	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/ray"
@@ -72,18 +74,73 @@ func (c *Camera) SetTransform(t math.Transform) *Camera {
 	return c
 }
 
+type Result struct {
+	Pixel canvas.Pixel
+	Color color.Color
+}
+
+func merge(cs ...<-chan Result) <-chan Result {
+	var wg sync.WaitGroup
+	out := make(chan Result)
+
+	// Start an output goroutine for each input channel in cs.  output
+	// copies values from c to out until c is closed, then calls wg.Done.
+	output := func(c <-chan Result) {
+		for n := range c {
+			out <- n
+		}
+		wg.Done()
+	}
+	wg.Add(len(cs))
+	for _, c := range cs {
+		go output(c)
+	}
+
+	// Start a goroutine to close out once all the output goroutines are
+	// done.  This must start after the wg.Add call.
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+	return out
+}
+
+func RenderGoroutine(pxs <-chan canvas.Pixel, s *scene.Scene, c *Camera) <-chan Result {
+	out := make(chan Result)
+	go func() {
+		for px := range pxs {
+			x, y := px.X, px.Y
+
+			r := c.ProjectPixelRay(x, y)
+			color := s.Cast(r)
+
+			out <- Result{
+				Pixel: px,
+				Color: color,
+			}
+		}
+		close(out)
+	}()
+	return out
+}
+
+const PARALLELISM = 16
+
 func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 	defer utils.TimeTrack(time.Now(), "Render")
-	pixels := frame.Pixels()
-	for pixels.More() {
-		u, v := pixels.Get()
-		r := c.ProjectPixelRay(u, v)
-		pix := s.Cast(r)
-		frame.Set(u, v, pix)
+	pixels := frame.PixelChannel()
+	cs := []<-chan Result{}
+
+	for x := 0; x < PARALLELISM; x++ {
+		cs = append(cs, RenderGoroutine(pixels, s, c))
+	}
+	for res := range merge(cs...) {
+		frame.Set(res.Pixel.X, res.Pixel.Y, res.Color)
 	}
 }
 
 func (c *Camera) SaveFrame(s *scene.Scene, filename string) {
+	defer utils.TimeTrack(time.Now(), "SaveFrame")
 	utils.EnsureDir(filepath.Dir(filename))
 	// Set up frame to render to
 	frame := canvas.NewImageCanvas(c.FrameWidth, c.FrameHeight)
@@ -97,12 +154,14 @@ func (c *Camera) SaveFrame(s *scene.Scene, filename string) {
 		return filepath.Base(filename)
 	})
 
-	pixels := frame.Pixels()
-	for pixels.More() {
-		u, v := pixels.Get()
-		r := c.ProjectPixelRay(u, v)
-		pix := s.Cast(r)
-		frame.Set(u, v, pix)
+	pixels := frame.PixelChannel()
+
+	cs := []<-chan Result{}
+	for x := 0; x < PARALLELISM; x++ {
+		cs = append(cs, RenderGoroutine(pixels, s, c))
+	}
+	for res := range merge(cs...) {
+		frame.Set(res.Pixel.X, res.Pixel.Y, res.Color)
 		bar.Incr()
 	}
 	frame.WritePNG(filename)

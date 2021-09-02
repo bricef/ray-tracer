@@ -14,6 +14,11 @@ import (
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
+type Pixel struct {
+	X int
+	Y int
+}
+
 type ImageCanvas struct {
 	width  int
 	height int
@@ -26,7 +31,9 @@ type Canvas interface {
 	Set(int, int, color.Color) error
 	Get(x, y int) (color.Color, error)
 	Pixels() *PixelIterator
+	PixelChannel() <-chan Pixel
 }
+
 type PixelIterator struct {
 	Canvas Canvas
 	Cx     int
@@ -51,6 +58,19 @@ func (i *PixelIterator) More() bool {
 
 func (c *ImageCanvas) Pixels() *PixelIterator {
 	return &PixelIterator{c, 0, 0}
+}
+
+func (c *ImageCanvas) PixelChannel() <-chan Pixel {
+	out := make(chan Pixel)
+	go func() {
+		for x := 0; x < c.width; x++ {
+			for y := 0; y < c.height; y++ {
+				out <- Pixel{X: x, Y: y}
+			}
+		}
+		close(out)
+	}()
+	return out
 }
 
 func (c *ImageCanvas) Height() int {
