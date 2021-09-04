@@ -8,6 +8,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/entities"
 	"github.com/bricef/ray-tracer/pkg/lighting"
 	"github.com/bricef/ray-tracer/pkg/material"
+	"github.com/bricef/ray-tracer/pkg/materials"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/scene"
 	"github.com/bricef/ray-tracer/pkg/shaders"
@@ -51,16 +52,7 @@ func main() {
 
 	s.Add(
 		entities.NewSphere().
-			AddComponent(
-				material.NewMaterial().
-					SetColor(color.New(0.1, 0.1, 0.1)).
-					SetDiffuse(0.0).
-					SetSpecular(1.0).
-					SetShininess(300).
-					SetTransparency(0.9).
-					SetReflective(0.9).
-					SetRefractiveIndex(1.5),
-			).
+			AddComponent(materials.Glass()).
 			Translate(-0.5, 1, 0.5),
 	)
 
