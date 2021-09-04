@@ -40,13 +40,13 @@ func main() {
 	s.Add( // floors
 		entities.NewCube().
 			AddComponent(floorMaterial).
-			Scale(20, 10, 20),
+			Scale(20, 20, 5),
 	)
 
 	s.Add( // walls
 		entities.NewCube().
 			AddComponent(wallMaterial).
-			Scale(10, 20, 10),
+			Scale(10, 10, 20),
 	)
 
 	s.Add(
@@ -65,8 +65,10 @@ func main() {
 	)
 
 	cube := entities.NewCube()
-	cube.Translate(4, 4, 0)
-	cube.RotateY(m.Pi / 2.0)
+	cube.Translate(-2, -5, 0)
+	cube.RotateZ(m.Pi / 4.0)
+	cube.RotateX(m.Pi / 4.0)
+	cube.RotateY(m.Pi / 4.0)
 	cube.GetMaterial().
 		SetColor(color.Red).
 		SetAmbient(0.2).
@@ -74,7 +76,7 @@ func main() {
 	s.Add(cube)
 
 	s.Add( // light
-		lighting.NewPointLight(color.White).Translate(-5, 5, -5),
+		lighting.NewPointLight(color.White).Translate(-5, 5, 2),
 	)
 
 	c := camera.

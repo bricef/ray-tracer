@@ -4,6 +4,10 @@ Brice's attempt at the ray tracer challenge in Go
 
 ## Chapters
 
+## Chapter 12 - Cubes
+
+![Scene with a cube](output/chapter12.png)
+
 ### Chapter 11 – Reflection and Refraction
 
 ![Scene with a refractive surface](output/chapter11-refraction.png)
