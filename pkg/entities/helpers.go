@@ -28,3 +28,9 @@ func NewGlassSphere() core.Entity {
 		AddComponent(meshes.SphereMesh()).
 		AddComponent(mat)
 }
+
+func NewCube() core.Entity {
+	return entity.NewEntity().
+		AddComponent(meshes.CubeMesh()).
+		AddComponent(material.NewMaterial())
+}
