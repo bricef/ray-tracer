@@ -84,8 +84,11 @@ type Entity interface {
 	// Composition
 	Components() []Component
 	Children() []Entity
+	HasChildren() bool
+	Parent() Entity
 	AddComponent(c Component) Entity
 	AddChild(e Entity) Entity
+	SetParent(e Entity) Entity
 	HasComponent(t ComponentType) bool
 	GetComponent(t ComponentType) Component
 	RemoveComponent(t ComponentType) Entity

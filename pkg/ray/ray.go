@@ -102,6 +102,12 @@ func (r Ray) GetIntersections(es []core.Entity) *Intersections {
 		if mat != nil && mesh != nil { // Ignore entities without mesh or material
 			xs = xs.Merge(r.Intersect(e))
 		}
+		if e.HasChildren() {
+			for _, child := range e.Children() {
+				tr := r.Transform(e.Transform().Inverse())
+				xs = xs.Merge(tr.Intersect(child))
+			}
+		}
 	}
 
 	for i, x := range xs.All {

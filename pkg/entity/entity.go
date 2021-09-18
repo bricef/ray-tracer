@@ -12,6 +12,7 @@ type EntityNode struct {
 	transform  math.Transform
 	components map[core.ComponentType]core.Component
 	children   []core.Entity
+	parent     core.Entity
 }
 
 func NewEntity() *EntityNode {
@@ -77,6 +78,14 @@ func (e *EntityNode) Components() []core.Component {
 func (e *EntityNode) Children() []core.Entity {
 	return e.children
 }
+func (e *EntityNode) HasChildren() bool {
+	return len(e.children) > 0
+}
+
+func (e *EntityNode) Parent() core.Entity {
+	return e.parent
+}
+
 func (e *EntityNode) AddComponent(c core.Component) core.Entity {
 	e.components[c.Type()] = c
 	return e
@@ -84,6 +93,12 @@ func (e *EntityNode) AddComponent(c core.Component) core.Entity {
 
 func (e *EntityNode) AddChild(c core.Entity) core.Entity {
 	e.children = append(e.children, c)
+	c.SetParent(e)
+	return e
+}
+
+func (e *EntityNode) SetParent(c core.Entity) core.Entity {
+	e.parent = c
 	return e
 }
 
