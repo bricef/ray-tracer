@@ -104,7 +104,7 @@ func (r Ray) GetIntersections(es []core.Entity) *Intersections {
 		}
 		if e.HasChildren() {
 			for _, child := range e.Children() {
-				tr := r.Transform(e.Transform().Inverse())
+				tr := r.Transform(child.Transform().Inverse()).(Ray)
 				xs = xs.Merge(tr.Intersect(child))
 			}
 		}

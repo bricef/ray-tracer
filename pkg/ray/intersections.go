@@ -1,6 +1,8 @@
 package ray
 
-import "sort"
+import (
+	"sort"
+)
 
 type Intersections struct {
 	All []*Intersection
@@ -10,6 +12,24 @@ type Intersections struct {
 func NewIntersections() *Intersections {
 	return &Intersections{}
 }
+
+// func (is *Intersections) All() []*Intersection {
+// 	// Haiku: A code lament
+// 	//
+// 	// If Thing implements Interface,
+// 	// Why []Thing not implement []Interface?
+// 	// Memory layout! Autumn leaves fall sadly.
+// 	//
+// 	xs := make([]*Intersection, len(is.all))
+// 	for i, x := range is.all {
+// 		xs[i] = x
+// 	}
+// 	return xs
+// }
+
+// func (is *Intersections) Hit() *Intersection {
+// 	return is.hit
+// }
 
 func (is *Intersections) Merge(xs *Intersections) *Intersections {
 	// Short circuit the empty case.

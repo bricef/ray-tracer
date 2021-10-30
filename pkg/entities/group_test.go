@@ -48,15 +48,15 @@ func TestGroupConstructionWithChildren(t *testing.T) {
 	}
 }
 
-func TestEmptyGroupHasEmptyIntersections(t *testing.T) {
+func TestEmptyGroupDoesNotHaveMesh(t *testing.T) {
 	g := entities.NewGroup()
-	r := ray.NewRay(
-		math.NewPoint(0, 0, 0),
-		math.NewVector(0, 0, 1),
-	)
-	ts := g.GetMesh().Intersect(r)
-	if len(ts) != 0 {
-		t.Errorf("An empty group should have not intersection.")
+	// r := ray.NewRay(
+	// 	math.NewPoint(0, 0, 0),
+	// 	math.NewVector(0, 0, 1),
+	// )
+	m := g.GetMesh()
+	if m != nil {
+		t.Errorf("An empty group should not have any mesh.")
 	}
 
 }
@@ -96,11 +96,12 @@ func TestGroupWithChildrenShouldHaveChildrenIntersect(t *testing.T) {
 }
 
 func TestGroupTransformOnIntersect(t *testing.T) {
+	s := entities.NewSphere().Translate(5, 0, 0)
 	g := entities.NewGroup()
+	g.AddChild(s)
 	g.Transform().Scale(2, 2, 2)
 
-	s := entities.NewSphere().Translate(5, 0, 0)
-	g.AddChild(s)
+	// g.AddChild(s)
 
 	r := ray.NewRay(
 		math.NewPoint(10, 0, -10),
