@@ -41,22 +41,10 @@ type Material interface {
 	RefractiveIndex() float64
 }
 
-// type Intersection interface {
-// 	T() float64
-// 	Entity() Entity
-// }
-
-// type Intersections interface {
-// 	Hit() Intersection
-// 	All() []Intersection
-// }
-
 type Ray interface {
 	Origin() math.Point
 	Direction() math.Vector
 	Position(t float64) math.Point
-	// Hit(Entity) ray.Intersection
-	// Intersect(Entity) Intersections
 	Transform(math.Transform) Ray
 	Equal(Ray) bool
 }

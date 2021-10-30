@@ -101,8 +101,6 @@ func TestGroupTransformOnIntersect(t *testing.T) {
 	g.AddChild(s)
 	g.Transform().Scale(2, 2, 2)
 
-	// g.AddChild(s)
-
 	r := ray.NewRay(
 		math.NewPoint(10, 0, -10),
 		math.NewVector(0, 0, 1),
