@@ -56,6 +56,8 @@ $ assimp export Model.stl Model.obj
 
 ## TODO
 
+- [ ] Implement cones
+- [ ] Add some XYZ helper arrows
 - [ ] Bounding boxes for efficiency (page 200)
 - [ ] Named entities and scene search
 - [ ] YAML loader for materials

@@ -34,3 +34,14 @@ func NewCube() core.Entity {
 		AddComponent(meshes.CubeMesh()).
 		AddComponent(material.NewMaterial())
 }
+
+func NewCylinder() core.Entity {
+	return entity.NewEntity().
+		AddComponent(meshes.CylinderMeshLimited(0, 1)).
+		AddComponent(material.NewMaterial())
+}
+func NewCappedCylinder() core.Entity {
+	return entity.NewEntity().
+		AddComponent(meshes.CylinderClosedMesh(0, 1)).
+		AddComponent(material.NewMaterial())
+}
