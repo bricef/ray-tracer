@@ -31,14 +31,41 @@ func (c *cylinder) Type() core.ComponentType {
 	return component.Mesh
 }
 
+func (cy *cylinder) checkCap(r core.Ray, t float64) bool {
+	x := r.Origin().X() + t*r.Direction().X()
+	z := r.Origin().Z() + t*r.Direction().Z()
+	return (x*x + z*z) <= 1
+}
+
+func (cy *cylinder) intersectCaps(r core.Ray) []float64 {
+	if !cy.capped || utils.AlmostEqual(r.Direction().Y(), 0) {
+		return []float64{}
+	}
+	ts := []float64{}
+
+	t1 := (cy.min - r.Origin().Y()) / r.Direction().Y()
+	if cy.checkCap(r, t1) {
+		ts = append(ts, t1)
+	}
+
+	t2 := (cy.max - r.Origin().Y()) / r.Direction().Y()
+	if cy.checkCap(r, t2) {
+		ts = append(ts, t2)
+	}
+
+	return ts
+}
+
 func (cy *cylinder) Intersect(r core.Ray) []float64 {
 	rdn := r.Direction().Normalize()
 	rdx := rdn.X()
 	rdz := rdn.Z()
 	a := rdx*rdx + rdz*rdz
 
+	ts := []float64{}
+
 	if utils.AlmostEqual(a, 0.0) {
-		return []float64{}
+		return cy.intersectCaps(r)
 	}
 
 	rox := r.Origin().X()
@@ -58,8 +85,6 @@ func (cy *cylinder) Intersect(r core.Ray) []float64 {
 		t0, t1 = t1, t0
 	}
 
-	ts := []float64{}
-
 	roy := r.Origin().Y()
 	rdy := r.Direction().Y()
 
@@ -72,6 +97,8 @@ func (cy *cylinder) Intersect(r core.Ray) []float64 {
 	if cy.min < y1 && y1 < cy.max {
 		ts = append(ts, t1)
 	}
+
+	ts = append(ts, cy.intersectCaps(r)...)
 
 	return ts
 }

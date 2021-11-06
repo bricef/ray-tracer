@@ -1,6 +1,7 @@
 package meshes_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/bricef/ray-tracer/pkg/entity"
@@ -123,6 +124,7 @@ func TestClosedCylinderIntersect(t *testing.T) {
 
 	for _, test := range tests {
 		ts := cm.Intersect(test.r)
+		fmt.Printf("%v, Got %v, expected %v\n", test.r, ts, test.ts)
 		if len(ts) != test.ts {
 			t.Errorf("Closed cylinder intersect failure with %v. Expected %v intersect. Got %v", test.r, test.ts, ts)
 		}
