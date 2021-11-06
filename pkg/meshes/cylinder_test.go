@@ -104,3 +104,28 @@ func TestCylindersHaveLimits(t *testing.T) {
 		}
 	}
 }
+
+func TestClosedCylinderIntersect(t *testing.T) {
+	cm := meshes.CylinderClosedMesh(1, 2)
+
+	type Test struct {
+		r  ray.Ray
+		ts int
+	}
+
+	tests := []Test{
+		{ray.NewRay(math.NewPoint(0, 3, 0), math.NewVector(0, -1, 0)), 2},
+		{ray.NewRay(math.NewPoint(0, 3, -2), math.NewVector(0, -1, 2)), 2},
+		{ray.NewRay(math.NewPoint(0, 4, -2), math.NewVector(0, -1, 1)), 2},
+		{ray.NewRay(math.NewPoint(0, 0, -2), math.NewVector(0, 1, 2)), 2},
+		{ray.NewRay(math.NewPoint(0, -1, -2), math.NewVector(0, 1, 1)), 2},
+	}
+
+	for _, test := range tests {
+		ts := cm.Intersect(test.r)
+		if len(ts) != test.ts {
+			t.Errorf("Closed cylinder intersect failure with %v. Expected %v intersect. Got %v", test.r, test.ts, ts)
+		}
+	}
+
+}

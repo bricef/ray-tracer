@@ -10,22 +10,21 @@ import (
 )
 
 type cylinder struct {
-	min float64
-	max float64
+	min    float64
+	max    float64
+	capped bool
 }
 
 func CylinderMesh() core.Mesh {
-	return &cylinder{
-		min: m.Inf(-1),
-		max: m.Inf(+1),
-	}
+	return &cylinder{m.Inf(-1), m.Inf(+1), false}
 }
 
 func CylinderMeshLimited(min float64, max float64) core.Mesh {
-	return &cylinder{
-		min: min,
-		max: max,
-	}
+	return &cylinder{min, max, false}
+}
+
+func CylinderClosedMesh(min, max float64) core.Mesh {
+	return &cylinder{min, max, true}
 }
 
 func (c *cylinder) Type() core.ComponentType {
