@@ -79,3 +79,28 @@ func TestCylinderNormal(t *testing.T) {
 		}
 	}
 }
+
+func TestCylindersHaveLimits(t *testing.T) {
+	cm := meshes.CylinderMeshLimited(1, 2)
+
+	type Test struct {
+		r  ray.Ray
+		ts int
+	}
+
+	tests := []Test{
+		{ray.NewRay(math.NewPoint(0, 1.5, 0), math.NewVector(0.1, 1, 0)), 0},
+		{ray.NewRay(math.NewPoint(0, 3, -5), math.NewVector(0, 0, 1)), 0},
+		{ray.NewRay(math.NewPoint(0, 0, -5), math.NewVector(0, 0, 1)), 0},
+		{ray.NewRay(math.NewPoint(0, 2, -5), math.NewVector(0, 0, 1)), 0},
+		{ray.NewRay(math.NewPoint(0, 1, -5), math.NewVector(0, 0, 1)), 0},
+		{ray.NewRay(math.NewPoint(0, 1.5, -5), math.NewVector(0, 0, 1)), 2},
+	}
+
+	for _, test := range tests {
+		ts := cm.Intersect(test.r)
+		if len(ts) != test.ts {
+			t.Errorf("Did not get correct number of intersection for %v with finite cylinder. Expected %v, got %v", test.r, test.ts, ts)
+		}
+	}
+}
