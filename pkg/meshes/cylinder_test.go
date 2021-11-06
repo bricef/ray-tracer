@@ -1,7 +1,6 @@
 package meshes_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/bricef/ray-tracer/pkg/entity"
@@ -124,9 +123,35 @@ func TestClosedCylinderIntersect(t *testing.T) {
 
 	for _, test := range tests {
 		ts := cm.Intersect(test.r)
-		fmt.Printf("%v, Got %v, expected %v\n", test.r, ts, test.ts)
+		// fmt.Printf("%v, Got %v, expected %v\n", test.r, ts, test.ts)
 		if len(ts) != test.ts {
 			t.Errorf("Closed cylinder intersect failure with %v. Expected %v intersect. Got %v", test.r, test.ts, ts)
+		}
+	}
+
+}
+
+func TestClosedCylinderNormals(t *testing.T) {
+	cm := meshes.CylinderClosedMesh(1, 2)
+
+	type Test struct {
+		p math.Point
+		n math.Vector
+	}
+
+	tests := []Test{
+		{math.NewPoint(0, 1, 0), math.NewVector(0, -1, 0)},
+		{math.NewPoint(0.5, 1, 0), math.NewVector(0, -1, 0)},
+		{math.NewPoint(0, 1, 0.5), math.NewVector(0, -1, 0)},
+		{math.NewPoint(0, 2, 0), math.NewVector(0, 1, 0)},
+		{math.NewPoint(0.5, 2, 0), math.NewVector(0, 1, 0)},
+		{math.NewPoint(0, 2, 0.5), math.NewVector(0, 1, 0)},
+	}
+
+	for _, test := range tests {
+		n := cm.Normal(test.p)
+		if !n.Equal(test.n) {
+			t.Errorf("Incorrect normal vector at capped cylinder point %v. Expected %v, got %v. ", test.p, test.n, n)
 		}
 	}
 
