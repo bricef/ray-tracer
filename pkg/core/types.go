@@ -93,6 +93,9 @@ type Entity interface {
 
 	// Proxy to mesh (requires entity transform)
 	Normal(worldPoint math.Point) math.Vector
+	// Utilities for normal calculations w.r.t Groups
+	WorldPointToObjectPoint(worldPoint math.Point) math.Point
+	ObjectNormalToWorldNormal(objectNormal math.Vector) math.Vector
 
 	// Update method
 	Tick(scene []Entity)

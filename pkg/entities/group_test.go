@@ -1,6 +1,7 @@
 package entities_test
 
 import (
+	m "math"
 	"testing"
 
 	"github.com/bricef/ray-tracer/pkg/core"
@@ -111,4 +112,58 @@ func TestGroupTransformOnIntersect(t *testing.T) {
 	if len(xs.All) != 2 {
 		t.Errorf("Expected transformed group to apply transform to children. Got %v", xs)
 	}
+}
+
+func TestConvertingWorldPointToObjectPoint(t *testing.T) {
+	g1 := entities.NewGroup().RotateY(m.Pi / 2.0)
+	g2 := entities.NewGroup().Scale(2, 2, 2)
+
+	g1.AddChild(g2)
+
+	s := entities.NewSphere().Translate(5, 0, 0)
+
+	g2.AddChild(s)
+
+	p := s.WorldPointToObjectPoint(math.NewPoint(-2, 0, -10))
+	expected := math.NewPoint(0, 0, -1)
+
+	if !p.Equal(expected) {
+		t.Errorf("Failed to convert world point to object point. Expected %v, got %v.", expected, p)
+	}
+
+}
+
+func TestConvertingWorldNormalToObjectNormal(t *testing.T) {
+	g1 := entities.NewGroup().RotateY(m.Pi / 2.0)
+	g2 := entities.NewGroup().Scale(1, 2, 3)
+	g1.AddChild(g2)
+	s := entities.NewSphere().Translate(5, 0, 0)
+	g2.AddChild(s)
+
+	k := m.Sqrt(3) / 3.0
+	n := s.ObjectNormalToWorldNormal(math.NewVector(k, k, k))
+
+	expected := math.NewVector(0.28571, 0.42857, -0.85714)
+
+	if !n.Equal(expected) {
+		t.Errorf("Failed to convert object normal to world normal. Expected %v, got %v", expected, n)
+	}
+
+}
+
+func TestNormalOfChildInGroup(t *testing.T) {
+	g1 := entities.NewGroup().RotateY(m.Pi / 2.0)
+	g2 := entities.NewGroup().Scale(1, 2, 3)
+	g1.AddChild(g2)
+	s := entities.NewSphere().Translate(5, 0, 0)
+	g2.AddChild(s)
+
+	n := s.Normal(math.NewPoint(1.7321, 1.1547, -5.5774))
+
+	expected := math.NewVector(0.28570, 0.42854, -0.85716)
+
+	if !n.Equal(expected) {
+		t.Errorf("Failed to get normal of entity in group. Expected %v, got %v", expected, n)
+	}
+
 }

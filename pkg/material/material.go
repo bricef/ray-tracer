@@ -99,7 +99,7 @@ func (m *Material) ColorAt(p math.Point) color.Color {
 }
 
 func (m *Material) ColorOn(e core.Entity, worldPoint math.Point) color.Color {
-	objectPoint := e.Transform().Inverse().Apply(worldPoint).AsPoint()
+	objectPoint := e.WorldPointToObjectPoint(worldPoint)
 	return m.ColorAt(objectPoint)
 }
 

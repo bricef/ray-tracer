@@ -121,13 +121,30 @@ func (e *EntityNode) HasComponent(t core.ComponentType) bool {
 
 func (e *EntityNode) Normal(worldPoint math.Point) math.Vector {
 	if mesh := e.GetMesh(); mesh != nil {
-		objectPoint := e.transform.Inverse().Apply(worldPoint)
+		objectPoint := e.WorldPointToObjectPoint(worldPoint)
 		objectNormal := mesh.Normal(objectPoint)
-		worldNormal := e.transform.Inverse().Transpose().Apply(objectNormal)
-		worldNormalVector := math.NewVector(worldNormal.X(), worldNormal.Y(), worldNormal.Z())
-		return worldNormalVector.Normalize()
+		worldNormal := e.ObjectNormalToWorldNormal(objectNormal)
+		return worldNormal
 	}
 	return math.NewVector(0, 0, 0)
+}
+
+func (e *EntityNode) WorldPointToObjectPoint(worldPoint math.Point) math.Point {
+	point := worldPoint
+	if e.parent != nil {
+		point = e.parent.WorldPointToObjectPoint(point)
+	}
+	return e.transform.Inverse().Apply(point)
+}
+
+func (e *EntityNode) ObjectNormalToWorldNormal(objectNormal math.Vector) math.Vector {
+	n := e.transform.Inverse().Transpose().Apply(objectNormal).AsVector()
+	n = math.NewVector(n.X(), n.Y(), n.Z())
+	n = n.Normalize()
+	if e.parent != nil {
+		n = e.parent.ObjectNormalToWorldNormal(n)
+	}
+	return n
 }
 
 func (e *EntityNode) Tick(scene []core.Entity) {
