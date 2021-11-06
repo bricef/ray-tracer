@@ -1,7 +1,6 @@
 package meshes_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/bricef/ray-tracer/pkg/entity"
@@ -52,9 +51,31 @@ func TestCylinderHit(t *testing.T) {
 
 	for _, test := range tests {
 		ts := cm.Intersect(test.ray)
-		fmt.Printf("test.expected: %v ts: %v\n", test.expected, ts)
 		if !utils.AlmostEqual(ts[0], test.expected[0]) || !utils.AlmostEqual(ts[1], test.expected[1]) {
 			t.Errorf("Cylinder hit failed. Expected %v, got %v", test.expected, ts)
+		}
+	}
+}
+
+func TestCylinderNormal(t *testing.T) {
+	cm := meshes.CylinderMesh()
+
+	type Test struct {
+		p math.Point
+		n math.Vector
+	}
+
+	tests := []Test{
+		{math.NewPoint(1, 0, 0), math.NewVector(1, 0, 0)},
+		{math.NewPoint(0, 5, -1), math.NewVector(0, 0, -1)},
+		{math.NewPoint(0, -2, 1), math.NewVector(0, 0, 1)},
+		{math.NewPoint(-1, 1, 0), math.NewVector(-1, 0, 0)},
+	}
+
+	for _, test := range tests {
+		n := cm.Normal(test.p)
+		if !n.Equal(test.n) {
+			t.Errorf("Failed to compute normal on cylinder. Expected %v, got %v", test.n, n)
 		}
 	}
 }

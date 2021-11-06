@@ -47,5 +47,5 @@ func (cy *cylinder) Intersect(r core.Ray) []float64 {
 }
 
 func (c *cylinder) Normal(p math.Point) math.Vector {
-	return math.NewVector(0, 0, 0)
+	return math.NewVector(p.X(), 0, p.Z()).Normalize()
 }
