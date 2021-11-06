@@ -56,6 +56,7 @@ $ assimp export Model.stl Model.obj
 
 ## TODO
 
+- [ ] Bounding boxes for efficiency (page 200)
 - [ ] Named entities and scene search
 - [ ] YAML loader for materials
 - [ ] YAML external scene description
