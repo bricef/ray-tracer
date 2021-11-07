@@ -14,7 +14,7 @@ type pointLight struct {
 }
 
 func NewPointLight(intensity color.Color) core.Entity {
-	return entity.NewEntity().AddComponent(&pointLight{intensity})
+	return entity.NewEntity().AddComponent(&pointLight{intensity}).SetName("PointLight")
 }
 
 func (p *pointLight) Intensity() color.Color {

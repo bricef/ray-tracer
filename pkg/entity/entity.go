@@ -13,6 +13,7 @@ type EntityNode struct {
 	components map[core.ComponentType]core.Component
 	children   []core.Entity
 	parent     core.Entity
+	name       string
 }
 
 func NewEntity() *EntityNode {
@@ -20,7 +21,17 @@ func NewEntity() *EntityNode {
 		transform:  math.NewTransform(),
 		components: make(map[core.ComponentType]core.Component, 5),
 		children:   make([]core.Entity, 0),
+		name:       "Entity",
 	}
+}
+
+func (e *EntityNode) SetName(name string) core.Entity {
+	e.name = name
+	return e
+}
+
+func (e *EntityNode) Name() string {
+	return e.name
 }
 
 // Transform proxy

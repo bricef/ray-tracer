@@ -100,7 +100,7 @@ func TestGroupTransformOnIntersect(t *testing.T) {
 	s := entities.NewSphere().Translate(5, 0, 0)
 	g := entities.NewGroup()
 	g.AddChild(s)
-	g.Transform().Scale(2, 2, 2)
+	g.Scale(2, 2, 2)
 
 	r := ray.NewRay(
 		math.NewPoint(10, 0, -10),

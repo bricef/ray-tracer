@@ -108,6 +108,8 @@ type Entity interface {
 
 	// Utilities
 	String() string
+	SetName(name string) Entity
+	Name() string
 }
 
 func Contains(es []Entity, e Entity) bool {

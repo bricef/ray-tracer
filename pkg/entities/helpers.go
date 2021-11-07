@@ -10,13 +10,15 @@ import (
 func NewSphere() core.Entity {
 	return entity.NewEntity().
 		AddComponent(meshes.SphereMesh()).
-		AddComponent(material.NewMaterial())
+		AddComponent(material.NewMaterial()).
+		SetName("Sphere")
 }
 
 func NewPlane() core.Entity {
 	return entity.NewEntity().
 		AddComponent(meshes.PlaneMesh()).
-		AddComponent(material.NewMaterial())
+		AddComponent(material.NewMaterial()).
+		SetName("Plane")
 }
 
 func NewGlassSphere() core.Entity {
@@ -26,22 +28,26 @@ func NewGlassSphere() core.Entity {
 
 	return entity.NewEntity().
 		AddComponent(meshes.SphereMesh()).
-		AddComponent(mat)
+		AddComponent(mat).
+		SetName("GlassSphere")
 }
 
 func NewCube() core.Entity {
 	return entity.NewEntity().
 		AddComponent(meshes.CubeMesh()).
-		AddComponent(material.NewMaterial())
+		AddComponent(material.NewMaterial()).
+		SetName("Cube")
 }
 
 func NewCylinder() core.Entity {
 	return entity.NewEntity().
 		AddComponent(meshes.CylinderMeshLimited(0, 1)).
-		AddComponent(material.NewMaterial())
+		AddComponent(material.NewMaterial()).
+		SetName("Cylinder")
 }
 func NewCappedCylinder() core.Entity {
 	return entity.NewEntity().
 		AddComponent(meshes.CylinderClosedMesh(0, 1)).
-		AddComponent(material.NewMaterial())
+		AddComponent(material.NewMaterial()).
+		SetName("CappedCylinder")
 }

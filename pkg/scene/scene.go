@@ -1,7 +1,9 @@
 package scene
 
 import (
+	"fmt"
 	m "math"
+	"strings"
 
 	"github.com/bricef/ray-tracer/pkg/color"
 	"github.com/bricef/ray-tracer/pkg/core"
@@ -197,4 +199,39 @@ func (s *Scene) RefractedContribution(i *ray.Intersection, depth int) color.Colo
 	return s.LimitedCast(refractionRay, depth-1).Scale(mat.Transparency())
 
 	// return color.White?
+}
+
+const TABWIDTH int = 4
+
+func display(e core.Entity, level int) {
+	indent := strings.Repeat(" ", level*TABWIDTH)
+	fmt.Printf("%v(%v", indent, e.Name())
+	if len(e.Children()) > 0 {
+		fmt.Print("\n")
+		for _, c := range e.Children() {
+			display(c, level+1)
+		}
+	}
+	fmt.Print(")")
+
+}
+
+func (s *Scene) Show() {
+	indent := strings.Repeat(" ", TABWIDTH)
+	fmt.Println("(Scene ")
+
+	fmt.Printf("%v(Entities", indent)
+	for _, e := range s.Entities {
+		fmt.Print("\n")
+		display(e, 2)
+	}
+	fmt.Printf(")\n")
+
+	fmt.Printf("%v(Lights\n", indent)
+	for _, e := range s.lights {
+		display(e, 2)
+	}
+	fmt.Printf(")")
+
+	fmt.Println(")")
 }
