@@ -12,6 +12,7 @@ import (
 	"github.com/bricef/ray-tracer/pkg/material"
 	"github.com/bricef/ray-tracer/pkg/math"
 	"github.com/bricef/ray-tracer/pkg/scene"
+	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
 func corner(mat core.Material) core.Entity {
@@ -72,6 +73,8 @@ func main() {
 		s.Add(hs)
 	}
 
+	s.Show()
+	fmt.Println()
 	// g1 := entities.NewGroup(
 	// 	entities.NewSphere().AddComponent(mat),
 	// 	entities.NewCylinder().
@@ -84,7 +87,7 @@ func main() {
 	// s.Add(corner)
 
 	c := camera.
-		CameraFromFOV(width, height, m.Pi/3.0).
+		CameraFromFOV(width, height, utils.DegressToRadians(70)).
 		SetTransform(
 			math.ViewTransform(
 				math.NewPoint(5, 2, -5),

@@ -208,8 +208,11 @@ func display(e core.Entity, level int) {
 	fmt.Printf("%v(%v", indent, e.Name())
 	if len(e.Children()) > 0 {
 		fmt.Print("\n")
-		for _, c := range e.Children() {
+		for i, c := range e.Children() {
 			display(c, level+1)
+			if i < len(e.Children())-1 {
+				fmt.Printf("\n")
+			}
 		}
 	}
 	fmt.Print(")")
