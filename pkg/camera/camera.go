@@ -124,7 +124,7 @@ func RenderGoroutine(pxs <-chan canvas.Pixel, s *scene.Scene, c *Camera) <-chan 
 	return out
 }
 
-const PARALLELISM = 16
+const PARALLELISM = 4
 
 func (c *Camera) Render(s *scene.Scene, frame canvas.Canvas) {
 	defer utils.TimeTrack(time.Now(), "Render")

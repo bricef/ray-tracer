@@ -15,26 +15,28 @@ import (
 	"github.com/bricef/ray-tracer/pkg/utils"
 )
 
+const Pi = m.Pi
+
 func corner(mat core.Material) core.Entity {
 	corner := entities.NewSphere().
-		Translate(0, 0, -1).
-		Scale(0.25, 0.25, 0.25).
+		// Translate(0, 0, 0).
+		Scale(0.5, 0.5, 0.5).
 		AddComponent(mat)
 	return corner
 }
 
 func edge(mat core.Material) core.Entity {
-	edge := entities.NewCylinder().
+	edge := entities.NewCube().
 		Scale(0.25, 1, 0.25).
-		RotateZ(-m.Pi/2.0).
-		RotateY(-m.Pi/6.0).
-		Translate(0, 0, -1).
+		// Translate(0, 0, -1)
+		// RotateZ(-m.Pi / 2.0).
+		// RotateY(-m.Pi / 2.0).
 		AddComponent(mat)
 	return edge
 }
 
 func side(mat core.Material) core.Entity {
-	return entities.NewGroup(corner(mat))
+	return entities.NewGroup(corner(mat), edge(mat))
 }
 
 // func hexagon(mat core.Material) core.Entity {
@@ -50,7 +52,7 @@ func side(mat core.Material) core.Entity {
 
 func main() {
 
-	width, height := 1000, 500
+	width, height := 500, 250
 
 	// set up scene
 	s := scene.NewScene()
@@ -65,13 +67,20 @@ func main() {
 	mat.SetAmbient(0.7)
 
 	// s.Add(side(mat))
-	for n := range [6]int{} {
-		hs := side(mat)
-		hs.RotateY(float64(n) * m.Pi / 3.0)
-		child := hs.Children()[0]
-		fmt.Printf("CHILD: %v,\nPARENT: %v\n\n", child, child.Parent().Transform())
-		s.Add(hs)
-	}
+	// for n := range [1]int{} {
+	// 	hs := side(mat)
+	// 	hs.RotateY(float64(n) * m.Pi / 3.0)
+	// 	child := hs.Children()[0]
+	// 	fmt.Printf("CHILD: %v,\nPARENT: %v\n\n", child, child.Parent().Transform())
+	// 	s.Add(hs)
+	// }
+
+	cube := entities.NewCube().Scale(0.25, 1, 0.25).AddComponent(mat)
+	wrappedCube := entities.NewGroup(entities.NewCube().Scale(0.25, 1, 0.25).AddComponent(mat))
+	s.Add(cube)
+	s.Add(wrappedCube)
+
+	fmt.Printf("Group transform: %v", wrappedCube.Transform())
 
 	s.Show()
 	fmt.Println()
