@@ -16,3 +16,10 @@ func Glass() core.Material {
 		SetReflective(0.9).
 		SetRefractiveIndex(1.5)
 }
+
+func DefaultMaterial() core.Material {
+	return material.NewMaterial().
+		SetColor(color.New(1, 0.9, 0.9)).
+		SetSpecular(0.0).
+		SetAmbient(0.7)
+}
