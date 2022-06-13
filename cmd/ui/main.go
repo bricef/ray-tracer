@@ -34,9 +34,13 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	img := canvas.NewImageFromImage(GetImageFromFile(imageFile))
-	img.SetMinSize(fyne.Size{Width: 1000, Height: 1000})
-	// img.SetMinSize(fyne.Size{img.Size().Width, img.Size().Height})
+	img := GetImageFromFile(imageFile)
+	cvs := canvas.NewImageFromImage(img)
+	cvs.FillMode = canvas.ImageFillContain
+	cvs.SetMinSize(fyne.Size{
+		Width:  float32(img.Bounds().Dx()),
+		Height: float32(img.Bounds().Dy()),
+	})
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
@@ -53,7 +57,7 @@ func main() {
 	)
 
 	main := container.NewVBox(
-		img,
+		cvs,
 		widget.NewButton("Render", func() {
 			log.Print("Trigger Render...")
 		}),
