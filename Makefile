@@ -16,4 +16,7 @@ clean:
 test:
 	go test ./...
 
+output/%.png: bin/%
+	$<
+
 .PHONY: clean test run build
