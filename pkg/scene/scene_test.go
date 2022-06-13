@@ -304,7 +304,7 @@ func TestRefractionSceneColoring(t *testing.T) {
 
 }
 
-func TestRefractionAndRefelctionCombined(t *testing.T) {
+func TestRefractionAndReflectionCombined(t *testing.T) {
 	s := scene.DefaultScene()
 
 	floor := entities.NewPlane()
